@@ -3,7 +3,7 @@
 #include "MainLexer.h"
 #include "MainParser.h"
 #include "MainBaseVisitor.h"
-
+#include "dotexport.h"
 
 using namespace antlr4;
 using namespace std;
@@ -38,5 +38,12 @@ int main(int , const char **)
     cout<<"Résultat "<<resultat<<endl;
     */
 
+    DotExport dotexport(&parser);
+    tree::ParseTreeWalker::DEFAULT.walk(&dotexport,tree);
+    ofstream out;
+    out.open("tmp.dot");
+    out<<dotexport.getDotFile();
+    out.close();
+    system("dot -Tpdf -o out.pdf tmp.dot");
     return 0;
 }

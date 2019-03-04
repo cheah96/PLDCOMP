@@ -50,7 +50,6 @@ TYPE: 'int'
 	| 'char'
 	| 'void'
 	;
-
 INT : [0-9]+ ;
 VAR : [a-zA-Z][a-zA-Z0-9]*;
 WS : [\t\r\n ] -> skip;
