@@ -1,9 +1,13 @@
 grammar Main;
 
-prog: (funct)*;
+prog: direct* (funct)*;
 
 funct : deffunc | declarfunc;
 
+instrprep : 'include' '"' FILENAME '"'
+			| 'include' '<' FILENAME '>';
+
+direct : '#' instrprep;
 	
 expr: expr '*' expr
 	| expr '/' expr
@@ -51,6 +55,8 @@ TYPE: 'int'
 	| 'void'
 	;
 
+FILENAME : [a-zA-Z0-9]+('.'[a-zA-Z0-9]+)*;
+PATH : (VAR '/')* FILENAME;
 INT : [0-9]+ ;
 VAR : [a-zA-Z][a-zA-Z0-9]*;
 WS : [\t\r\n ] -> skip;
