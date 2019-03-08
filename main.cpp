@@ -2,8 +2,10 @@
 #include "antlr4-runtime.h"
 #include "MainLexer.h"
 #include "MainParser.h"
+#include "Comp.h"
 #include "MainBaseVisitor.h"
 #include "dotexport.h"
+#include <string>
 
 using namespace antlr4;
 using namespace std;
@@ -30,13 +32,13 @@ int main(int , const char **)
 
     cout << "PLD COMP" << endl;
 
-   /*
-    Calc visitor;
+   
+    Comp visitor;
 
-    int resultat = (int)visitor.visit(tree);
 
-    cout<<"Résultat "<<resultat<<endl;
-    */
+    visitor.visit(tree);
+    
+    //cout << r <<endl;
 
     DotExport dotexport(&parser);
     tree::ParseTreeWalker::DEFAULT.walk(&dotexport,tree);
