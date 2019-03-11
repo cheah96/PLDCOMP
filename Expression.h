@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include <fstream>
 using namespace std;
 
 class Expr {
@@ -8,7 +9,7 @@ class Expr {
       Expr() { }
       virtual ~Expr(){}
       virtual int eval () = 0;
-    
+      virtual void generateCode(ofstream& o) = 0;
 };
 
 class ExprInt : public Expr {
@@ -17,6 +18,9 @@ class ExprInt : public Expr {
       virtual ~ExprInt(){}
       int eval (){
         return value;
+      }
+      void generateCode(ofstream& o){
+        o << "$" << value;
       }
     protected:
       int value;

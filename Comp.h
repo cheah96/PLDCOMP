@@ -46,9 +46,12 @@ public:
     }
 
     antlrcpp::Any visitExpr(MainParser::ExprContext *ctx) override {
-        int val = (int)stoi(ctx->INT()->getText());
-        //cout << "Expr "<<endl;
-        return (Expr*)new ExprInt(val);
+        if(ctx->INT() != nullptr){
+            int val = (int)stoi(ctx->INT()->getText());
+            //cout << "Expr "<<endl;
+            return (Expr*)new ExprInt(val); 
+        }
+        return nullptr;
     }
 
     antlrcpp::Any visitDeclar(MainParser::DeclarContext *ctx) override {

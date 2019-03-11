@@ -36,7 +36,13 @@ int main(int , const char **)
     Comp visitor;
 
 
-    visitor.visit(tree);
+    Program* prog = (Program*)visitor.visit(tree);
+
+    ofstream o;
+    o.open("test.s");
+
+    prog->generateCode(o);
+
     
     //cout << r <<endl;
 

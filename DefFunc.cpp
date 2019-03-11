@@ -7,6 +7,7 @@ DefFunc::~DefFunc() {
     }
     params.clear();
     delete block;
+    delete returnType;
 }
 
 void DefFunc::addParameter(Parameter* param){

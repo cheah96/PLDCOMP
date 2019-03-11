@@ -6,6 +6,7 @@ DecFunc::~DecFunc() {
         delete params[i];
     }
     params.clear();
+    delete returnType;
 }
 
 void DecFunc::addParameter(Parameter* param){
