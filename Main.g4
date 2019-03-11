@@ -25,14 +25,14 @@ def : TYPE VAR affect ';'
 	| VAR affect ';'
 	;
 
-deffunc : TYPE VAR '(' paramdec? ')' body 
+deffunc : TYPE VAR '(' paramdec? ')' block 
 	;
 
 declarfunc : TYPE VAR '(' paramdec? ')' ';';  
 
 execfunc : VAR '(' param? ')';
 
-body : '{' statement* '}';
+block : '{' statement* '}';
 
 statement : ret
 	| def
