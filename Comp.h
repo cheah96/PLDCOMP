@@ -9,6 +9,7 @@
 #include "DefFunc.h"
 #include "DecFunc.h"
 #include "Program.h"
+#include "DefVar.h"
 
 
 
@@ -20,9 +21,9 @@ class Comp : public MainBaseVisitor {
 
 public:
 
-    antlrcpp::Any visitProg(MainParser::ProgContext *ctx) override {
+    antlrcpp::Any visitProg(MainParser::ProgContext *context) override {
         Program* prog = new Program;
-        vector<MainParser::FunctContext *> funcs = ctx->funct();
+        vector<MainParser::FunctContext *> funcs = context->funct();
         size_t length = funcs.size();
         for(size_t i = 0; i < length; i++){
             Function* func = (Function*)visit(funcs[i]);
@@ -32,71 +33,88 @@ public:
         return prog;
     }
 
-    antlrcpp::Any visitFunct(MainParser::FunctContext *ctx) override {
+    antlrcpp::Any visitFunct(MainParser::FunctContext *context) override {
         Function* func = nullptr; 
-        if(ctx->deffunc() != nullptr){
+        if(context->deffunc() != nullptr){
             //cout << "func "<<endl;
-            func = (Function*)visit(ctx->deffunc());
+            func = (Function*)visit(context->deffunc());
              //cout << "func "<<endl;
         }
-        if(ctx->declarfunc() != nullptr){
-            func = (Function*)visit(ctx->declarfunc());
+        else if(context->declarfunc() != nullptr){
+            func = (Function*)visit(context->declarfunc());
         }
     return func;
     }
 
-    antlrcpp::Any visitExpr(MainParser::ExprContext *ctx) override {
-        if(ctx->INT() != nullptr){
-            int val = (int)stoi(ctx->INT()->getText());
+    /*antlrcpp::Any visitExpr(MainParser::ExprContext *context) override {
+        if(context->INT() != nullptr){
+            int val = (int)stoi(context->INT()->getText());
             //cout << "Expr "<<endl;
             return (Expr*)new ExprInt(val); 
         }
+        else if(!context->expr().empty()){
+            vector<MainParser::ExprContext *> exprVec = context->expr();
+            for(MainParser::ExprContext * cont : exprVec){
+                cout << cont->getText() << endl;
+            }
+        }
         return nullptr;
+    }*/
+
+    antlrcpp::Any visitPar(MainParser::ParContext *context) override {
+        return visitChildren(context);
     }
 
-    antlrcpp::Any visitDeclar(MainParser::DeclarContext *ctx) override {
-    return visitChildren(ctx);
+    antlrcpp::Any visitExfunc(MainParser::ExfuncContext *context) override {
+        return visitChildren(context);
     }
 
-    antlrcpp::Any visitAffect(MainParser::AffectContext *ctx) override {
-    return visitChildren(ctx);
+    antlrcpp::Any visitConst(MainParser::ConstContext *context) override {
+        return visitChildren(context);
     }
 
-    antlrcpp::Any visitDef(MainParser::DefContext *ctx) override {
-    return visitChildren(ctx);
+    antlrcpp::Any visitVar(MainParser::VarContext *context) override {
+        return visitChildren(context);
     }
 
-    antlrcpp::Any visitDeffunc(MainParser::DeffuncContext *ctx) override {
-        /*string funcname = ctx->VAR()->getText();
-        string* asscode = new string("  .globl    " + funcname + "\n");
-        *asscode += funcname + ":\n";
-        *asscode += "pushq   %rbp\n";
-        *asscode += "movq    %rsp, %rbp\n";
+    antlrcpp::Any visitMultdiv(MainParser::MultdivContext *context) override {
+        return visitChildren(context);
+    }
 
-        string *test = (string *)visit(ctx->body());
-        //cout<<*test<<endl;
-        *asscode += "popq    %rbp\n";
-        *asscode += "ret\n";
-        //cout <<*asscode<<endl;*/
-        //cout << "DefFunc "<<endl;
-        string type = ctx->TYPE()->getText();
-        string name = ctx->VAR()->getText();
-        Block* block = (Block*)visit(ctx->block());
+    antlrcpp::Any visitAddsub(MainParser::AddsubContext *context) override {
+        return visitChildren(context);
+    }
+
+    antlrcpp::Any visitDeclarvar(MainParser::DeclarvarContext *context) override {
+    return visitChildren(context);
+    }
+
+    antlrcpp::Any visitDefvar(MainParser::DefvarContext *context) override {
+        string type = context->TYPE()->getText();
+        string name = context->VAR()->getText();
+        Expr* expr = visit(context->expr()).as<Expr*>();
+        DefVar* def = new DefVar(type,name,expr);
+        return (Statement*)def;
+    }
+
+    antlrcpp::Any visitDeffunc(MainParser::DeffuncContext *context) override {
+        string type = context->TYPE()->getText();
+        string name = context->VAR()->getText();
+        Block* block = (Block*)visit(context->block());
         DefFunc* def = new DefFunc(type,name,block);
-        //cout << "DefFunc "<<endl;
         return (Function*)def;
     }
 
-    antlrcpp::Any visitDeclarfunc(MainParser::DeclarfuncContext *ctx) override {
-    return visitChildren(ctx);
+    antlrcpp::Any visitDeclarfunc(MainParser::DeclarfuncContext *context) override {
+    return visitChildren(context);
     }
 
-    antlrcpp::Any visitExecfunc(MainParser::ExecfuncContext *ctx) override {
-    return visitChildren(ctx);
+    antlrcpp::Any visitExecfunc(MainParser::ExecfuncContext *context) override {
+    return visitChildren(context);
     }
 
-    antlrcpp::Any visitBlock(MainParser::BlockContext *ctx) override {
-        vector<MainParser::StatementContext *> stats = ctx->statement();
+    antlrcpp::Any visitBlock(MainParser::BlockContext *context) override {
+        vector<MainParser::StatementContext *> stats = context->statement();
         size_t length = stats.size();
         Block* block = new Block;
         //cout <<"Block" <<endl;
@@ -108,38 +126,38 @@ public:
         return block;
     }
 
-    antlrcpp::Any visitStatement(MainParser::StatementContext *ctx) override {  
+    antlrcpp::Any visitStatement(MainParser::StatementContext *context) override {  
         Statement* stat = nullptr; 
-        if(ctx->ret() != nullptr){
+        if(context->ret() != nullptr){
             //cout << "hhhhh" << endl;
-            stat = visit(ctx->ret()).as<Statement*>();
+            stat = visit(context->ret()).as<Statement*>();
             //cout << "hhhhh" << endl;
         }
-        if(ctx->def() != nullptr){
-            //stat = (Return*)visit(ctx->def());
+        if(context->defvar() != nullptr){
+            stat = visit(context->defvar()).as<Statement*>();
         }
-        if(ctx->expr() != nullptr){
-            //stat = (Return*)visit(ctx->expr());
+        if(context->expr() != nullptr){
+            //stat = (Return*)visit(context->expr());
         }
-        if(ctx->declar() != nullptr){
-            //stat = (Return*)visit(ctx->declar());
+        if(context->declarvar() != nullptr){
+            //stat = (Return*)visit(context->declar());
         }
         
         return stat;
     }
 
-    antlrcpp::Any visitRet(MainParser::RetContext *ctx) override {
+    antlrcpp::Any visitRet(MainParser::RetContext *context) override {
         
-        Expr* expr = (Expr*)visit(ctx->expr());
+        Expr* expr = (Expr*)visit(context->expr());
         return (Statement*)new Return(expr);
     }
 
-    antlrcpp::Any visitParamdec(MainParser::ParamdecContext *ctx) override {
-    return visitChildren(ctx);
+    antlrcpp::Any visitParamdec(MainParser::ParamdecContext *context) override {
+    return visitChildren(context);
     }
 
-    antlrcpp::Any visitParam(MainParser::ParamContext *ctx) override {
-    return visitChildren(ctx);
+    antlrcpp::Any visitParam(MainParser::ParamContext *context) override {
+    return visitChildren(context);
     }
 
 };

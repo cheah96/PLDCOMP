@@ -30,6 +30,14 @@ int main(int , const char **)
 
     tree::ParseTree* tree = parser.prog();
 
+    DotExport dotexport(&parser);
+    tree::ParseTreeWalker::DEFAULT.walk(&dotexport,tree);
+    ofstream out;
+    out.open("tmp.dot");
+    out<<dotexport.getDotFile();
+    out.close();
+    system("dot -Tpdf -o out.pdf tmp.dot");
+
     cout << "PLD COMP" << endl;
 
    
@@ -46,12 +54,6 @@ int main(int , const char **)
     
     //cout << r <<endl;
 
-    DotExport dotexport(&parser);
-    tree::ParseTreeWalker::DEFAULT.walk(&dotexport,tree);
-    ofstream out;
-    out.open("tmp.dot");
-    out<<dotexport.getDotFile();
-    out.close();
-    system("dot -Tpdf -o out.pdf tmp.dot");
+    
     return 0;
 }

@@ -1,3 +1,4 @@
 int main(){
-	return 36;
+	int x=2+3; 
+	return x;
 }
