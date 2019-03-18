@@ -19,8 +19,10 @@ class Program{
             func->generateCode(o);
          }
       }
+      string buildIR(CFG* cfg);
             
     protected:
         vector<Function*> funcs;
+        vector<CFG*> cfgs;
 
 };

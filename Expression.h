@@ -3,8 +3,10 @@
 #include <map>
 #include <vector>
 #include <fstream>
-#include "CFG.h"
+#include "Type.h"
 using namespace std;
+
+class CFG;
 
 enum OPTYPE{
   ADD,SUB,MULT,DIV
@@ -42,7 +44,7 @@ class Expr {
 
 class ExprInt : public Expr {
     public:
-      ExprInt(int oneValue) : value(oneValue), type("int") { }
+      ExprInt(int oneValue) : value(oneValue) { type=Type("int"); }
       virtual ~ExprInt(){}
       int eval (){
         return value;
@@ -57,7 +59,7 @@ class ExprInt : public Expr {
 
 class ExprVar : public Expr {
     public:
-      ExprVar(string oneName) : myName(oneName), type("int") { }
+      ExprVar(string oneName) : myName(oneName) {type=Type("int"); }
       virtual ~ExprVar(){}
       int eval (){
         return 0;
@@ -71,7 +73,7 @@ class ExprVar : public Expr {
 
 class ExprBinary : public Expr {
     public:
-      ExprBinary(OPTYPE oneType, Expr* oneOp1, Expr* oneOp2) : op1(oneOp1), op2(oneOp2), , type("int") { myOp = new Operator(oneType);}
+      ExprBinary(OPTYPE oneType, Expr* oneOp1, Expr* oneOp2) : op1(oneOp1), op2(oneOp2){ myOp = new Operator(oneType); type=Type("int");}
       virtual ~ExprBinary(){ delete op1; delete op2; delete myOp; }
       int eval (){
         return 0;

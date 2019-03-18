@@ -2,6 +2,8 @@
 #include <fstream>
 using namespace std;
 
+class CFG;
+
 class Statement {
    public:
       Statement() { }

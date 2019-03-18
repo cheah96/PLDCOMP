@@ -1,6 +1,7 @@
 #include "DefVar.h"
 
 string DefVarWithDeclar::buildIR(CFG * cfg){
+    /*
     //lvalue
     string left = myVar->buildIR(cfg);
     cfg->add_to_symbol_table(left,*myType);
@@ -25,8 +26,10 @@ string DefVarWithDeclar::buildIR(CFG * cfg){
     params3.push_back(right);
     cfg->current_bb->add_IRInstr(wmem,typeInt,params3);
     return right;
+    */
+   return "";
 }
 
 string DefVarWithoutDeclar::buildIR(CFG * cfg){
-
+    return "";
 }

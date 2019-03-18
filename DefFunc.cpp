@@ -13,3 +13,8 @@ DefFunc::~DefFunc() {
 void DefFunc::addParameter(Parameter* param){
     params.push_back(param);
 }
+
+string DefFunc::buildIR(CFG* cfg){
+    block->buildIR(cfg);
+    return "";
+}

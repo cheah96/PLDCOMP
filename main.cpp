@@ -46,10 +46,12 @@ int main(int , const char **)
 
     Program* prog = (Program*)visitor.visit(tree);
 
-    ofstream o;
+    cout << "PLD COMP Success" << endl;
+
+    /*ofstream o;
     o.open("test.s");
 
-    prog->generateCode(o);
+    prog->generateCode(o);*/
 
     
     //cout << r <<endl;

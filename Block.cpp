@@ -8,6 +8,13 @@ Block::~Block() {
     stats.clear();
 }
 
+string Block::buildIR(CFG* cfg){
+    for(Statement* stat : stats){
+        stat->buildIR(cfg);
+    }
+    return "";
+}
+
 /*void Block::addStatement(Statement* stat){
     stats.push_back(stat);
 }*/

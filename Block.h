@@ -16,6 +16,7 @@ class Block{
             stat->generateCode(o);
          }
       }
+      string buildIR(CFG* cfg);
       
     protected:
        vector<Statement*> stats; 

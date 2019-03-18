@@ -1,20 +1,13 @@
 #include "Expression.h"
 
-/*Expr::~Expr(){}
-
-ExprInt::~ExprInt(){}
-
-int ExprInt::eval(){
-    return value;
-}*/
-
 string ExprInt::buildIR(CFG * cfg){
-    string var = cfg->create_new_tempvar(this->getType());
+    /*string var = cfg->create_new_tempvar(this->getType());
     vector<string> params;
     params.push_back(var);
     params.push_back(to_string(value));
     cfg->current_bb->add_IRInstr(ldconst,this->getType(),);
-    return var;
+    return var;*/
+    return "";
 }
 
 string ExprVar::buildIR(CFG * cfg){
@@ -22,7 +15,7 @@ string ExprVar::buildIR(CFG * cfg){
 }
 
 string ExprBinary::buildIR(CFG * cfg){
-    OPTYPE value = myOp->getValue();
+    /*OPTYPE value = myOp->getValue();
     string var1 = op1->buildIR(cfg);
     string var2 = op2->buildIR(cfg);
     string var3 = cfg->create_new_tempvar(this->getType());
@@ -57,5 +50,6 @@ string ExprBinary::buildIR(CFG * cfg){
             cfg->current_bb->add_IRInstr(div,this->getType,params);
             break;   
     }
-    return var3;
+    return var3;*/
+    return "";
 }

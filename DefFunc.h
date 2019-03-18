@@ -27,6 +27,7 @@ class DefFunc : public Function{
          o << "   popq	%rbp" << endl;
          o << "   ret" << endl;
       }
+      string buildIR(CFG* cfg);
       
     protected:
        string name;

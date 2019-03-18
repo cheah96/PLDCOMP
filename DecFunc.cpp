@@ -12,3 +12,7 @@ DecFunc::~DecFunc() {
 void DecFunc::addParameter(Parameter* param){
     params.push_back(param);
 }
+
+string DecFunc::buildIR(CFG* cfg){
+    return "";
+}

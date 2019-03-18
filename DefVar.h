@@ -3,11 +3,15 @@
 #include <vector>
 #include "Type.h"
 #include "Statement.h"
+#include "Expression.h"
+
 using namespace std;
+
+class CFG;
 
 class DefVar : public Statement{
    public:
-      DefVar() : {}
+      DefVar() {}
       virtual ~DefVar(){}
       virtual void generateCode(ofstream& o) = 0;
       virtual string buildIR(CFG * cfg) = 0;

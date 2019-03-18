@@ -13,7 +13,7 @@ class DecFunc : public Function{
       DecFunc(string oneName, string oneType) : name(oneName){returnType = new Type(oneType); }
       ~DecFunc();
       void addParameter(Parameter* param);
-      
+      string buildIR(CFG* cfg);
       virtual void generateCode(ofstream& o){
 
       }

@@ -41,21 +41,6 @@ public:
     return func;
     }
 
-    /*antlrcpp::Any visitExpr(MainParser::ExprContext *context) override {
-        if(context->INT() != nullptr){
-            int val = (int)stoi(context->INT()->getText());
-            //cout << "Expr "<<endl;
-            return (Expr*)new ExprInt(val); 
-        }
-        else if(!context->expr().empty()){
-            vector<MainParser::ExprContext *> exprVec = context->expr();
-            for(MainParser::ExprContext * cont : exprVec){
-                cout << cont->getText() << endl;
-            }
-        }
-        return nullptr;
-    }*/
-
     antlrcpp::Any visitPar(MainParser::ParContext *context) override {
         return visitChildren(context);
     }
@@ -77,28 +62,32 @@ public:
 
     antlrcpp::Any visitMultdiv(MainParser::MultdivContext *context) override {
         Expr* temp = nullptr;
-        if(context->getChild(1)->getText() == "*"){
+        /* string test = context->children[1]->getText();
+         cout << test << endl;*/
+        if(context->children[1]->getText() == "*"){
             Expr* op1 = visit(context->expr(0)).as<Expr*>();
             Expr* op2 = visit(context->expr(1)).as<Expr*>();
-            temp = new ExprBinary(2,op1,op2);
-        }else if(context->getChild(1)->getText() == "/"){
+            temp = new ExprBinary(OPTYPE::MULT,op1,op2);
+        }else if(context->children[1]->getText() == "/"){
             Expr* op1 = visit(context->expr(0)).as<Expr*>();
             Expr* op2 = visit(context->expr(1)).as<Expr*>();
-            temp = new ExprBinary(3,op1,op2);
+            temp = new ExprBinary(OPTYPE::DIV,op1,op2);
         }
         return temp;
     }
 
     antlrcpp::Any visitAddsub(MainParser::AddsubContext *context) override {
          Expr* temp = nullptr;
-        if(context->getChild(1)->getText() == "+"){
+         /*string test = context->children[1]->getText();
+         cout << test << endl;*/
+        if(context->children[1]->getText() == "+"){
             Expr* op1 = visit(context->expr(0)).as<Expr*>();
             Expr* op2 = visit(context->expr(1)).as<Expr*>();
-            temp = new ExprBinary(0,op1,op2);
-        }else if(context->getChild(1)->getText() == "-"){
+            temp = new ExprBinary(OPTYPE::ADD,op1,op2);
+        }else if(context->children[1]->getText() == "-"){
             Expr* op1 = visit(context->expr(0)).as<Expr*>();
             Expr* op2 = visit(context->expr(1)).as<Expr*>();
-            temp = new ExprBinary(1,op1,op2);
+            temp = new ExprBinary(OPTYPE::SUB,op1,op2);
         }
         return temp;
     }
@@ -107,7 +96,7 @@ public:
     return visitChildren(context);
     }
 
-    antlrcpp::Any visitDefWithDeclar(MainParser::DefWithDeclarContext *context){
+    antlrcpp::Any visitDefWithDeclar(MainParser::DefWithDeclarContext *context) override{
         string type = context->TYPE()->getText();
         string name = context->VAR()->getText();
         Expr* expr = visit(context->expr()).as<Expr*>();
@@ -115,7 +104,7 @@ public:
         return (Statement*)def;
     }
 
-    antlrcpp::Any visitDefWithoutDeclar(MainParser::DefWithoutDeclarContext *context){
+    antlrcpp::Any visitDefWithoutDeclar(MainParser::DefWithoutDeclarContext *context) override{
         string name = context->VAR()->getText();
         Expr* expr = visit(context->expr()).as<Expr*>();
         DefVar* def = new DefVarWithoutDeclar(name,expr);
