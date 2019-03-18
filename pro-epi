@@ -1,0 +1,20 @@
+
+void CFG::gen_asm_prologue(ostream& o){
+    string pro = "";
+    pro += "    pushq   %rbp\n";
+    pro += "    movq    %rsp, %rbp\n";
+    pro += "    subq    $";
+    pro += to_string(nextFreeSymbolIndex);
+    pro += ",   %rsp\n";
+    o << pro;
+}
+
+void CFG::gen_asm_epilogue(ostream& o){
+    string epi = "";
+    epi += "    addq    $";
+    epi += to_string(nextFreeSymbolIndex);
+    epi += ",   %rsp\n";
+    epi += "    popq   %rbp\n";
+    epi += "    retq\n";
+    o << epi;
+}
