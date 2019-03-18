@@ -16,8 +16,8 @@ expr: expr ('*'|'/') expr # multdiv
 declarvar: TYPE VAR (',' VAR)* ';'
 	;
 
-defvar : TYPE VAR '=' expr ';'
-	| VAR '=' expr ';'
+defvar : TYPE VAR '=' expr ';' #defWithDeclar
+	| VAR '=' expr ';' #defWithoutDeclar
 	;
 
 deffunc : TYPE VAR '(' paramdec? ')' block 

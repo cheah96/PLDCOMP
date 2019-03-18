@@ -7,4 +7,5 @@ class Statement {
       Statement() { }
       virtual ~Statement() { }
       virtual void generateCode(ofstream& o) = 0;
+      virtual string buildIR(CFG * cfg) = 0;
 };

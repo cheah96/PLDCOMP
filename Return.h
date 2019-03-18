@@ -14,6 +14,7 @@ class Return : public Statement {
          expr->generateCode(o);
          o << "," << " %eax\n";
       }
+      string buildIR(CFG * cfg);
     protected:
        Expr* expr; 
 };

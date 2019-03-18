@@ -11,11 +11,6 @@
 #include "Program.h"
 #include "DefVar.h"
 
-
-
-
-
-
 using namespace std;
 class Comp : public MainBaseVisitor {
 
@@ -70,30 +65,60 @@ public:
     }
 
     antlrcpp::Any visitConst(MainParser::ConstContext *context) override {
-        return visitChildren(context);
+       int val = (int)stoi(context->INT()->getText());
+        //cout << "Expr "<<endl;
+        return (Expr*)new ExprInt(val); 
     }
 
     antlrcpp::Any visitVar(MainParser::VarContext *context) override {
-        return visitChildren(context);
+        string varName = context->VAR()->getText();
+        return (Expr*)new ExprVar(varName); 
     }
 
     antlrcpp::Any visitMultdiv(MainParser::MultdivContext *context) override {
-        return visitChildren(context);
+        Expr* temp = nullptr;
+        if(context->getChild(1)->getText() == "*"){
+            Expr* op1 = visit(context->expr(0)).as<Expr*>();
+            Expr* op2 = visit(context->expr(1)).as<Expr*>();
+            temp = new ExprBinary(2,op1,op2);
+        }else if(context->getChild(1)->getText() == "/"){
+            Expr* op1 = visit(context->expr(0)).as<Expr*>();
+            Expr* op2 = visit(context->expr(1)).as<Expr*>();
+            temp = new ExprBinary(3,op1,op2);
+        }
+        return temp;
     }
 
     antlrcpp::Any visitAddsub(MainParser::AddsubContext *context) override {
-        return visitChildren(context);
+         Expr* temp = nullptr;
+        if(context->getChild(1)->getText() == "+"){
+            Expr* op1 = visit(context->expr(0)).as<Expr*>();
+            Expr* op2 = visit(context->expr(1)).as<Expr*>();
+            temp = new ExprBinary(0,op1,op2);
+        }else if(context->getChild(1)->getText() == "-"){
+            Expr* op1 = visit(context->expr(0)).as<Expr*>();
+            Expr* op2 = visit(context->expr(1)).as<Expr*>();
+            temp = new ExprBinary(1,op1,op2);
+        }
+        return temp;
     }
 
     antlrcpp::Any visitDeclarvar(MainParser::DeclarvarContext *context) override {
     return visitChildren(context);
     }
 
-    antlrcpp::Any visitDefvar(MainParser::DefvarContext *context) override {
+    antlrcpp::Any visitDefWithDeclar(MainParser::DefWithDeclarContext *context){
         string type = context->TYPE()->getText();
         string name = context->VAR()->getText();
         Expr* expr = visit(context->expr()).as<Expr*>();
-        DefVar* def = new DefVar(type,name,expr);
+        DefVar* def = new DefVarWithDeclar(type,name,expr);
+        return (Statement*)def;
+    }
+
+    antlrcpp::Any visitDefWithoutDeclar(MainParser::DefWithoutDeclarContext *context){
+        string name = context->VAR()->getText();
+        Expr* expr = visit(context->expr()).as<Expr*>();
+        DefVar* def = new DefVarWithoutDeclar(name,expr);
         return (Statement*)def;
     }
 
