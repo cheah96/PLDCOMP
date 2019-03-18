@@ -5,24 +5,19 @@ prog: (funct)*;
 funct : deffunc | declarfunc;
 
 	
-expr: expr '*' expr
-	| expr '/' expr
-	| expr '+' expr
-	| expr '-' expr
-	| INT
-	| VAR
-	| '(' expr ')'
-	| execfunc
+expr: expr ('*'|'/') expr # multdiv
+	| expr ('+'|'-') expr # addsub
+	| INT			# const
+	| VAR			# var
+	| '(' expr ')'  # par
+	| execfunc		# exfunc
 	;
 
-declar: TYPE VAR (',' VAR)* ';'
+declarvar: TYPE VAR (',' VAR)* ';'
 	;
 
-affect : '=' expr
-	;
-
-def : TYPE VAR affect ';'
-	| VAR affect ';'
+defvar : TYPE VAR '=' expr ';' #defWithDeclar
+	| VAR '=' expr ';' #defWithoutDeclar
 	;
 
 deffunc : TYPE VAR '(' paramdec? ')' block 
@@ -35,9 +30,9 @@ execfunc : VAR '(' param? ')';
 block : '{' statement* '}';
 
 statement : ret
-	| def
+	| defvar
 	| expr
-	| declar
+	| declarvar
 	;
 
 ret : 'return' expr ';';
@@ -50,7 +45,9 @@ TYPE: 'int'
 	| 'char'
 	| 'void'
 	;
+
 INT : [0-9]+ ;
 VAR : [a-zA-Z][a-zA-Z0-9]*;
 WS : [\t\r\n ] -> skip;
+
 

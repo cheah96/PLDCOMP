@@ -13,3 +13,7 @@ Type::Type(string oneType){
         myType = ERROR;
     }
 }
+
+ string Type::getText(){
+    return typeLabel[myType];
+}

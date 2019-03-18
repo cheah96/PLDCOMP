@@ -5,6 +5,8 @@
 //#include "DecFunc.h"
 using namespace std;
 
+class CFG;
+
 class Parameter;
 
 enum FUNCTYPE{
@@ -20,8 +22,9 @@ class Function{
       virtual ~Function(){}//delete def; delete dec;
       virtual void addParameter(Parameter* param) = 0;
       virtual void generateCode(ofstream& o) = 0;
-      /*virtual string getName() = 0;
-      virtual Type* getType() = 0;
+      virtual string buildIR(CFG* cfg) = 0;
+      virtual string getName() = 0;
+      /*virtual Type* getType() = 0;
       virtual Parameter* getParams() = 0;
       virtual Block* getBlock(){}*/
       
