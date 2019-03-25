@@ -10,7 +10,7 @@ Type::Type(string oneType){
     else if(oneType == "char"){
         myType = CHAR;
     }else{
-        myType = ERROR;
+        myType = UNKNOWN;
     }
 }
 

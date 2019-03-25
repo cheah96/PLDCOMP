@@ -10,9 +10,9 @@
 using namespace antlr4;
 using namespace std;
 
-int main(int , const char **) 
+int main(int argc, const char ** argv) 
 {
-    ifstream is ("ret42.c");
+    ifstream is (argv[1]);
 
     if (!is) 
     {
@@ -56,6 +56,5 @@ int main(int , const char **)
     
     //cout << r <<endl;
 
-    
     return 0;
 }

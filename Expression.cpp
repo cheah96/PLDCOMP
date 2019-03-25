@@ -14,6 +14,16 @@ string ExprVar::buildIR(CFG * cfg){
     return myName;
 }
 
+string ExprChar::buildIR(CFG * cfg){
+    string var = cfg->create_new_tempvar(this->getType());
+    vector<string> params;
+    params.push_back(var);
+    int valueInt = (int)value;
+    params.push_back(to_string(valueInt));
+    cfg->current_bb->add_IRInstr(IRInstr::ldconst,this->getType(),params);
+    return var;
+}
+
 string ExprBinary::buildIR(CFG * cfg){
     OPTYPE value = myOp->getValue();
     string var1 = op1->buildIR(cfg);

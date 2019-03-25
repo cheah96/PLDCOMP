@@ -1,9 +1,24 @@
 int main(){
-	int x=2+3;
-	int y = 1+8;
-	int z = x + y;
-	z = z + 2;
+	int x,y;
+	x=2+3;
+	y = 1+x;
 	y = y + x;
-	x = y + z;
-	return x+3;
+	y = y * (x + 3);
+	putchar('Z');
+	putchar('h');
+	putchar('e');
+	putchar('n');
+	putchar('y');
+	putchar('u');
+	putchar(' ');
+	putchar('\b');
+	putchar('b');
+	putchar('e');
+	putchar('a');
+	putchar('u');
+	putchar(' ');
+	char c = '!';
+	putchar(c);
+	putchar('\n');
+	return y;
 }

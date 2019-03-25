@@ -71,6 +71,39 @@ class AddInstr : public IRInstr {
 		string y;
 };
 
+class SubInstr : public IRInstr {
+	public:
+		SubInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t), d(destination), x(operand1), y(operand2) {}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private :
+		string d;
+		string x;
+		string y;
+};
+
+class MulInstr : public IRInstr {
+	public:
+		MulInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t), d(destination), x(operand1), y(operand2) {}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private :
+		string d;
+		string x;
+		string y;
+};
+
+class DivInstr : public IRInstr {
+	public:
+		DivInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t), d(destination), x(operand1), y(operand2) {}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private :
+		string d;
+		string x;
+		string y;
+};
+
 class CmpInstr : public IRInstr {
 	public:
 		CmpInstr(BasicBlock* bb_, Operation op, Type t, string operand1, string operand2) : IRInstr(bb_, op, t), x(operand1), y(operand2) {}
@@ -79,6 +112,24 @@ class CmpInstr : public IRInstr {
 	private :
 		string x;
 		string y;
+};
+
+class CallInstr : public IRInstr {
+	public:
+		CallInstr(BasicBlock* bb_, Type t, vector<string>& oneParams) : IRInstr(bb_, call, t){
+			dest = oneParams.at(0);
+			label = oneParams.at(1);
+			size_t length = oneParams.size();
+			for(size_t i = 2; i < length; i++){
+				params.push_back(oneParams.at(i));
+			}
+		}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private :
+		string dest;
+		string label;
+		vector<string> params;
 };
 
 class WmemInstr : public IRInstr {

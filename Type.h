@@ -7,10 +7,10 @@ enum ENUMTYPE{
     VOID,
     INT,
     CHAR,
-    ERROR
+    UNKNOWN
 };
 
-const string typeLabel[4] = {"void","int","char","error"};
+const string typeLabel[4] = {"void","int","char","unknown"};
 
 class Type{
    public:
