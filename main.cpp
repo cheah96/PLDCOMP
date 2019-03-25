@@ -37,17 +37,12 @@ int main(int , const char **)
     out<<dotexport.getDotFile();
     out.close();
     system("dot -Tpdf -o out.pdf tmp.dot");
-
-    cout << "PLD COMP" << endl;
-
    
     Comp visitor;
 
 
     Program* prog = (Program*)visitor.visit(tree);
-    cout << "PLD COMP Success" << endl;
     prog->buildIR();
-	cout << "PLD COMP Success" << endl;
     ofstream o;
     o.open("test.s");
 

@@ -9,7 +9,6 @@ CFG::CFG(Function * func)
 	ast = func;
 	nextFreeSymbolIndex = 0;
 	nextBBnumber = 1;
-	cout << bbs.size()<<endl;
 }
 void CFG::gen_asm(ostream& o) {
 	o << "	.globl	" << ast->getName() << endl;
