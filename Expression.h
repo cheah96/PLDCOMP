@@ -4,6 +4,7 @@
 #include <vector>
 #include <fstream>
 #include "Type.h"
+#include "Statement.h"
 using namespace std;
 
 class CFG;
@@ -28,9 +29,9 @@ class Operator{
       OPTYPE value;
 };
 
-class Expr {
+class Expr : Statement{
    public:
-      Expr() : type("error") { }
+      Expr() : type("unknown") { }
       virtual ~Expr(){}
       virtual int eval () = 0;
       virtual void generateCode(ofstream& o) = 0;
@@ -69,6 +70,20 @@ class ExprVar : public Expr {
       string buildIR(CFG * cfg);
     protected:
       string myName;
+};
+
+class ExprChar : public Expr {
+    public:
+      ExprChar(char oneChar) : value(oneChar) {type=Type("char"); }
+      virtual ~ExprChar(){}
+      int eval (){
+        return 0;
+      }
+      void generateCode(ofstream& o){
+      }
+      string buildIR(CFG * cfg);
+    protected:
+      char value;
 };
 
 class ExprBinary : public Expr {

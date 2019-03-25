@@ -10,6 +10,9 @@
 #include "DecFunc.h"
 #include "Program.h"
 #include "DefVar.h"
+#include "DeclarVar.h"
+#include "Param.h"
+#include "ExecFunc.h"
 
 using namespace std;
 class Comp : public MainBaseVisitor {
@@ -38,15 +41,16 @@ public:
         else if(context->declarfunc() != nullptr){
             func = (Function*)visit(context->declarfunc());
         }
-    return func;
+        return func;
     }
 
     antlrcpp::Any visitPar(MainParser::ParContext *context) override {
-        return visitChildren(context);
+        return (Expr*)visit(context->expr());
     }
 
     antlrcpp::Any visitExfunc(MainParser::ExfuncContext *context) override {
-        return visitChildren(context);
+        Expr* e = (Expr*)visit(context->execfunc());
+        return e;
     }
 
     antlrcpp::Any visitConst(MainParser::ConstContext *context) override {
@@ -76,6 +80,12 @@ public:
         return temp;
     }
 
+    antlrcpp::Any visitChar(MainParser::CharContext *context) override{
+        string oneChar = context->CHAR()->getText();
+        char myChar = oneChar.at(1);
+        return (Expr*)new ExprChar(myChar);
+    }
+
     antlrcpp::Any visitAddsub(MainParser::AddsubContext *context) override {
          Expr* temp = nullptr;
          /*string test = context->children[1]->getText();
@@ -93,7 +103,14 @@ public:
     }
 
     antlrcpp::Any visitDeclarvar(MainParser::DeclarvarContext *context) override {
-    return visitChildren(context);
+        string type = context->TYPE()->getText();
+        vector<string>* lesVars = new vector<string>; 
+        vector<antlr4::tree::TerminalNode *> vars = context->VAR();
+        for(antlr4::tree::TerminalNode * oneVar : vars){
+            lesVars->push_back(oneVar->getText());
+        }
+        Statement* declarVars = new DeclarVar(lesVars, type);
+        return declarVars;
     }
 
     antlrcpp::Any visitDefWithDeclar(MainParser::DefWithDeclarContext *context) override{
@@ -124,7 +141,10 @@ public:
     }
 
     antlrcpp::Any visitExecfunc(MainParser::ExecfuncContext *context) override {
-    return visitChildren(context);
+        string funcName = context->VAR()->getText();
+        Param* myParams = (Param*)visit(context->param());
+        ExecFunc* ex = new ExecFunc(funcName, myParams);
+        return (Expr*)ex;
     }
 
     antlrcpp::Any visitBlock(MainParser::BlockContext *context) override {
@@ -151,10 +171,10 @@ public:
             stat = visit(context->defvar()).as<Statement*>();
         }
         if(context->expr() != nullptr){
-            //stat = (Return*)visit(context->expr());
+            stat = visit(context->expr()).as<Statement*>();
         }
         if(context->declarvar() != nullptr){
-            //stat = (Return*)visit(context->declar());
+            stat = visit(context->declarvar()).as<Statement*>();
         }
         
         return stat;
@@ -171,7 +191,13 @@ public:
     }
 
     antlrcpp::Any visitParam(MainParser::ParamContext *context) override {
-    return visitChildren(context);
+        vector<MainParser::ExprContext *> exprs = context->expr();
+        Param* oneParams = new Param;
+        for(MainParser::ExprContext * eContext : exprs){
+            Expr* e = (Expr*)visit(eContext);
+            oneParams->addExpr(e);
+        }
+        return oneParams;
     }
 
 };

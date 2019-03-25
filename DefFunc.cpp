@@ -15,6 +15,8 @@ void DefFunc::addParameter(Parameter* param){
 }
 
 string DefFunc::buildIR(CFG* cfg){
+
+    cout << "dqs" << endl;
     block->buildIR(cfg);
     return "";
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include "CFG.h"
 using namespace std;
 
 class CFG;

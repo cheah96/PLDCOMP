@@ -13,13 +13,8 @@ class Program{
          funcs.push_back(func);
       }
       //vector<Function*> getFuncs(){return funcs;}
-      void generateCode(ofstream& o){
-         o << "   .text " << endl;
-         for(Function* func : funcs){
-            func->generateCode(o);
-         }
-      }
-      string buildIR(CFG* cfg);
+      void generateCode(ofstream& o);
+      string buildIR();
             
     protected:
         vector<Function*> funcs;

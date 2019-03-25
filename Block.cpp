@@ -10,6 +10,7 @@ Block::~Block() {
 
 string Block::buildIR(CFG* cfg){
     for(Statement* stat : stats){
+        cout << "dqqsdqsdqsds" << endl;
         stat->buildIR(cfg);
     }
     return "";

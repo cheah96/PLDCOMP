@@ -23,8 +23,8 @@ class Function{
       virtual void addParameter(Parameter* param) = 0;
       virtual void generateCode(ofstream& o) = 0;
       virtual string buildIR(CFG* cfg) = 0;
-      /*virtual string getName() = 0;
-      virtual Type* getType() = 0;
+      virtual string getName() = 0;
+      /*virtual Type* getType() = 0;
       virtual Parameter* getParams() = 0;
       virtual Block* getBlock(){}*/
       

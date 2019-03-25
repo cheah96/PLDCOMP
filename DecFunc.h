@@ -17,7 +17,7 @@ class DecFunc : public Function{
       virtual void generateCode(ofstream& o){
 
       }
-
+	  string getName() { return name;}
       
     protected:
        string name;
