@@ -15,9 +15,7 @@ Program::~Program() {
 string Program::buildIR(){
     for(Function* func : funcs){
         CFG* cfg = new CFG(func);
-        cout << "dqsqdqs" << endl;
         func->buildIR(cfg);
-        cout << "dqs" << endl;
         cfgs.push_back(cfg);
     }
 	return "";
@@ -27,7 +25,6 @@ void Program::generateCode(ofstream& o){
 	o << "   .text " << endl;
 	for(CFG* cfg : cfgs){
 		if (cfg == nullptr) {
-			cout << "ihofsihoqs" <<endl;
 			continue;
 		}
 		cfg->gen_asm(o);

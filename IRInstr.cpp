@@ -135,7 +135,6 @@ void CmpInstr::gen_asm(ostream &o) {
 void CallInstr::gen_asm(ostream &o) {
 	int offset;
 	if(label == "putchar"){
-		cout << params[0] << endl;
 		offset = bb->get_cfg()->get_var_index(params[0]);
 		o << "	movl	";
 		o << offset << "(%rbp)";

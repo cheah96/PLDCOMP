@@ -1,8 +1,6 @@
 #include "DefVar.h"
 
 string DefVarWithDeclar::buildIR(CFG * cfg){
-
-    cout << "defVar" << endl;
     //Declaration
     string left = myVar->buildIR(cfg);
     cfg->add_to_symbol_table(left,*myType);
@@ -26,12 +24,10 @@ string DefVarWithDeclar::buildIR(CFG * cfg){
     params3.push_back(var);//Here, we use the value in var
     params3.push_back(right);
     cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
-    cout << "finDefVar" << endl;
     return right;
 }
 
 string DefVarWithoutDeclar::buildIR(CFG * cfg){
-     cout << "DefVarWithoutDeclar" << endl;
     //Declaration
     string left = myVar->buildIR(cfg);
     //rvalue
@@ -54,6 +50,5 @@ string DefVarWithoutDeclar::buildIR(CFG * cfg){
     params3.push_back(var);//Here, we use the value in var
     params3.push_back(right);
     cfg->current_bb->add_IRInstr(IRInstr::wmem,cfg->get_var_type(left),params3);
-    cout << "finDefVarWithoutDeclar" << endl;
     return right;
 }
