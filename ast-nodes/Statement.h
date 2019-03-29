@@ -1,6 +1,6 @@
 #pragma once
 #include <fstream>
-#include "CFG.h"
+#include "../gen-assembly/CFG.h"
 using namespace std;
 
 class CFG;

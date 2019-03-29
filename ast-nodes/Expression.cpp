@@ -1,5 +1,5 @@
 #include "Expression.h"
-#include "CFG.h"
+#include "../gen-assembly/CFG.h"
 
 string ExprInt::buildIR(CFG * cfg){
     string var = cfg->create_new_tempvar(this->getType());

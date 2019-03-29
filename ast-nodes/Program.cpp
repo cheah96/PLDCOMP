@@ -1,5 +1,5 @@
 #include "Program.h"
-#include "CFG.h"
+#include "../gen-assembly/CFG.h"
 
 Program::Program(){
 }

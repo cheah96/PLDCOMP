@@ -1,5 +1,5 @@
 #pragma once
-#include "Type.h"
+#include "../ast-nodes/Type.h"
 #include <vector>
 #include <string>
 #include <iostream>

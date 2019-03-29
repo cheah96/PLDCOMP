@@ -1,5 +1,5 @@
 #include "CFG.h"
-#include "Function.h"
+#include "../ast-nodes/Function.h"
 
 CFG::CFG(Function * func)
 {
