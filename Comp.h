@@ -19,7 +19,6 @@ using namespace std;
 class Comp : public MainBaseVisitor {
 
 public:
-
     antlrcpp::Any visitProg(MainParser::ProgContext *context) override {
         Program* prog = new Program;
         vector<MainParser::FunctContext *> funcs = context->funct();

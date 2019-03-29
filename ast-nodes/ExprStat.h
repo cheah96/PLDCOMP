@@ -9,9 +9,6 @@ class ExprStat : public Statement{
         ExprStat(Expr* oneExpr) : myExpr(oneExpr){}
         virtual ~ExprStat();
         string buildIR(CFG* cfg);
-        void generateCode(ofstream& o){
-
-        }      
     protected:
         Expr* myExpr;
 };

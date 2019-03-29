@@ -14,6 +14,6 @@ Type::Type(string oneType){
     }
 }
 
- string Type::getText(){
+string Type::getText(){
     return typeLabel[myType];
 }

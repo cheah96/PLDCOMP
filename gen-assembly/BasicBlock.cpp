@@ -19,7 +19,7 @@ void BasicBlock::gen_asm(ostream &o) {
 
 void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> params) {
 	switch(op){
-		case IRInstr::ldconst :
+        case IRInstr::ldconst :
 			instrs.push_back(new LdconstInstr(this, t, params[0], params[1]));
 			break;
 		case IRInstr::add :
