@@ -13,9 +13,15 @@
 #include "ast-nodes/DeclarVar.h"
 #include "ast-nodes/Param.h"
 #include "ast-nodes/ExecFuncNormal.h"
+<<<<<<< HEAD
 #include "ast-nodes/ExprStat.h" 
 #include "ast-nodes/PutChar.h" 
 #include "ast-nodes/ParamDec.h" 
+=======
+#include "ast-nodes/ExprStat.h"
+#include "ast-nodes/PutChar.h"
+#include "ast-nodes/ParamDec.h"
+>>>>>>> 72383e0f38654d5ca55508d0451ceb2b8e1c7215
 
 using namespace std;
 
@@ -36,7 +42,7 @@ public:
     }
 
     antlrcpp::Any visitFunct(MainParser::FunctContext *context) override {
-        Function* func = nullptr; 
+        Function* func = nullptr;
         if(context->deffunc() != nullptr){
             func = (Function*)visit(context->deffunc());
         }
@@ -57,12 +63,16 @@ public:
 
     antlrcpp::Any visitConst(MainParser::ConstContext *context) override {
        int val = (int)stoi(context->INT()->getText());
+<<<<<<< HEAD
         return (Expr*)new ExprInt(val); 
+=======
+        return (Expr*)new ExprInt(val);
+>>>>>>> 72383e0f38654d5ca55508d0451ceb2b8e1c7215
     }
 
     antlrcpp::Any visitVar(MainParser::VarContext *context) override {
         string varName = context->VAR()->getText();
-        return (Expr*)new ExprVar(varName); 
+        return (Expr*)new ExprVar(varName);
     }
 
     antlrcpp::Any visitMultdiv(MainParser::MultdivContext *context) override {
@@ -106,7 +116,7 @@ public:
             }else if(oneChar.at(2) == '?'){
                 myChar = '\?';
             }else if(oneChar.at(2) == '\\'){
-                myChar = '\\'; 
+                myChar = '\\';
             }
         }else{
             myChar = oneChar.at(1);
@@ -128,9 +138,39 @@ public:
         return temp;
     }
 
+    antlrcpp::Any visitPostop(MainParser::PostopContext *context) override {
+		cout << "PostopIN" << endl;
+        Expr* ex = nullptr;
+		Expr* var = new ExprVar(context->VAR()->getText());
+		if(context->children[1]->getText() == "++"){
+			ex = new ExprUnary(OPTYPE::POSTINC, var);
+		}else if(context->children[1]->getText() == "--"){
+			ex = new ExprUnary(OPTYPE::POSTDEC, var);
+		}
+		cout << "PostopOUT" << endl;
+        return ex;
+    }
+
+    antlrcpp::Any visitPreop(MainParser::PreopContext *context) override {
+		cout << "PreopIN" << endl;
+        Expr* ex = nullptr;
+		Expr* var = new ExprVar(context->VAR()->getText());
+		if(context->children[0]->getText() == "++"){
+			ex = new ExprUnary(OPTYPE::PREINC, var);
+		}else if(context->children[0]->getText() == "--"){
+			ex = new ExprUnary(OPTYPE::PREDEC, var);
+		}
+		cout << "PreopOUT" << endl;
+        return ex;
+    }
+
+	antlrcpp::Any visitCmp(MainParser::CmpContext *context) override {
+		return visitChildren(context);
+    }
+
     antlrcpp::Any visitDeclarvar(MainParser::DeclarvarContext *context) override {
         string type = context->TYPE()->getText();
-        vector<string>* lesVars = new vector<string>; 
+        vector<string>* lesVars = new vector<string>;
         vector<antlr4::tree::TerminalNode *> vars = context->VAR();
         for(antlr4::tree::TerminalNode * oneVar : vars){
             lesVars->push_back(oneVar->getText());
@@ -155,15 +195,15 @@ public:
     }
 
     antlrcpp::Any visitDefFuncNormal(MainParser::DefFuncNormalContext *context) override {
-	string type = context->TYPE()->getText();
+        string type = context->TYPE()->getText();
         string name = context->VAR()->getText();
         Block* block = (Block*)visit(context->block());
-	ParamDec* decs = nullptr;
-	if(context->paramdec() != nullptr){
-		decs = visit(context->paramdec()).as<ParamDec*>();
-	}else{
-		cout << "Pas de parametres(Normal)" << endl;
-	}
+        ParamDec* decs = nullptr;
+        if(context->paramdec() != nullptr){
+                decs = visit(context->paramdec()).as<ParamDec*>();
+        }else{
+                cout << "Pas de parametres(Normal)" << endl;
+        }
         DefFunc* def = new DefFunc(type,name,block,decs);
         return (Function*)def;
     }
@@ -171,32 +211,32 @@ public:
     antlrcpp::Any visitDefFuncVoid(MainParser::DefFuncVoidContext *context) override {
         string name = context->VAR()->getText();
         Block* block = (Block*)visit(context->block());
-	ParamDec* decs = nullptr;
-	if(context->paramdec() != nullptr){
-		decs = visit(context->paramdec()).as<ParamDec*>();
-	}else{
-		cout << "Pas de parametres(Void)" << endl;
-	}
+        ParamDec* decs = nullptr;
+        if(context->paramdec() != nullptr){
+                decs = visit(context->paramdec()).as<ParamDec*>();
+        }else{
+                cout << "Pas de parametres(Void)" << endl;
+        }
         DefFunc* def = new DefFunc("void",name,block,decs);
         return (Function*)def;
     }
 
     antlrcpp::Any visitDeclarFuncNormal(MainParser::DeclarFuncNormalContext *context) override {
-	return visitChildren(context);
+        return visitChildren(context);
     }
 
     antlrcpp::Any visitDeclarFuncVoid(MainParser::DeclarFuncVoidContext *context) override {
-	return visitChildren(context);
+        return visitChildren(context);
     }
 
     antlrcpp::Any visitPutchar(MainParser::PutcharContext *context) override{
-	Expr* oneExpr = (Expr*)visit(context->expr()); 
+        Expr* oneExpr = (Expr*)visit(context->expr());
         PutChar* ex = new PutChar("putchar", oneExpr);
         return (Expr*)ex;
     }
 
     antlrcpp::Any visitNormalExec(MainParser::NormalExecContext *context) override{
-	string funcName = context->VAR()->getText();
+        string funcName = context->VAR()->getText();
         Param* myParams = (Param*)visit(context->param());
         ExecFuncNormal* ex = new ExecFuncNormal(funcName, myParams);
         return (Expr*)ex;
@@ -221,7 +261,7 @@ public:
 
 
     antlrcpp::Any visitStatement(MainParser::StatementContext *context) override {  
-        Statement* stat = nullptr; 
+        Statement* stat = nullptr;
         if(context->ret() != nullptr){
             stat = visit(context->ret()).as<Statement*>();
         }
@@ -229,7 +269,9 @@ public:
             stat = visit(context->defvar()).as<Statement*>();
         }
         if(context->exprstat() != nullptr){
+			cout << "ExprStatIN" << endl;
             stat = visit(context->exprstat()).as<Statement*>();
+			cout << "ExprStatOUT" << endl;
         }
         if(context->declarvar() != nullptr){
             stat = visit(context->declarvar()).as<Statement*>();
@@ -238,23 +280,28 @@ public:
     }
 
     antlrcpp::Any visitRet(MainParser::RetContext *context) override {
-        
-        Expr* expr = (Expr*)visit(context->expr());
-        return (Statement*)new Return(expr);
+		Statement* stat = nullptr;
+		if(context->expr() != nullptr){
+			Expr* expr = (Expr*)visit(context->expr());
+			stat = new Return(expr);
+		}else{
+			stat = new Return(nullptr);
+		}
+        return stat;
     }
 
     antlrcpp::Any visitParamdec(MainParser::ParamdecContext *context) override {
-	ParamDec* decs = new ParamDec;	
-	vector<antlr4::tree::TerminalNode *> lesTypes = context->TYPE();
-	vector<antlr4::tree::TerminalNode *> lesVars = context->VAR();
-	size_t length = lesTypes.size();
-	for(size_t i = 0; i < length; i++){
-		Parameter* temp = new Parameter(lesVars.at(i)->getText(),lesTypes.at(i)->getText());
-		decs->addParameter(temp);
-		cout << lesTypes.at(i)->getText() << endl;
-		cout << lesVars.at(i)->getText() << endl;
-	}
-	return decs;
+        ParamDec* decs = new ParamDec;        
+        vector<antlr4::tree::TerminalNode *> lesTypes = context->TYPE();
+        vector<antlr4::tree::TerminalNode *> lesVars = context->VAR();
+        size_t length = lesTypes.size();
+        for(size_t i = 0; i < length; i++){
+                Parameter* temp = new Parameter(lesVars.at(i)->getText(),lesTypes.at(i)->getText());
+                decs->addParameter(temp);
+                cout << lesTypes.at(i)->getText() << endl;
+                cout << lesVars.at(i)->getText() << endl;
+        }
+        return decs;
     }
 
     antlrcpp::Any visitParam(MainParser::ParamContext *context) override {
@@ -266,6 +313,21 @@ public:
         }
         return oneParams;
     }
+	
+	antlrcpp::Any visitCompare(MainParser::CompareContext *context) override {
+		return visitChildren(context);
+	}
+
+	antlrcpp::Any visitIfins(MainParser::IfinsContext *context) override {
+        return visitChildren(context);
+    }
+
+    antlrcpp::Any visitElseifins(MainParser::ElseifinsContext *context) override {
+        return visitChildren(context);
+    }
+
+    antlrcpp::Any visitElseins(MainParser::ElseinsContext *context) override {
+        return visitChildren(context);
+    }
 
 };
-

@@ -10,9 +10,24 @@ expr: expr ('*'|'/') expr # multdiv
 	| INT			# const
 	| VAR			# var
 	|  CHAR 		# char
-	| '(' expr ')'  # par
+	| '(' expr ')'  	# par
 	| execfunc		# exfunc
+	| VAR ('++'|'--')	# postop
+	| ('++'|'--') VAR	# preop 
+	| expr ('&&'|'||') expr	# exprBin
+	| expr compare expr 	# cmp
 	;
+
+compare: ('<'|'>') '='?
+	| ('!'|'=') '='
+	;
+
+ifins: 'if' '(' expr ')' (statement|block) elseifins* elseins;
+
+elseifins : 'else if' '(' expr ')' (statement|block) ;
+
+elseins: 'else' (statement|block) ; 
+
 
 declarvar: TYPE VAR (',' VAR)* ';'
 	;
@@ -41,6 +56,7 @@ statement : ret
 	| defvar
 	| exprstat 
 	| declarvar
+	| ifins
 	;
 
 ret : 'return' expr ';';
