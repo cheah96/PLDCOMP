@@ -43,5 +43,8 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
 		case IRInstr::wmem :
 			instrs.push_back(new WmemInstr(this, t, params[0],params[1]));
 			break;
+		case IRInstr::copy :
+			instrs.push_back(new CopyInstr(this, t, params[0],params[1]));
+			break;
 	}
 }

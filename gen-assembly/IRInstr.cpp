@@ -33,6 +33,27 @@ void LdconstInstr::gen_asm(ostream &o) {
 	}	
 }
 
+void CopyInstr::gen_asm(ostream &o) {
+	int offsetD = bb->get_cfg()->get_var_index(d);
+	int offsetS = bb->get_cfg()->get_var_index(s);
+	if(t.getText() == "int"){
+		o << "\n";
+		o << "	movq  ";
+		o << offsetS <<"(%rbp)";
+    	o << "," << "%rax\n";
+		o << "	movq  ";
+		o << "%rax";
+    	o << "," << offsetD <<"(%rbp)\n";
+		o << "\n";
+	}else if(t.getText() == "char"){
+		o << "	movb  ";
+		o << offsetS <<"(%rbp)";
+    	o << "," << "%dl\n";
+		o << "	movb  ";
+		o << "%dl";
+    	o << "," << offsetD <<"(%rbp)\n";
+	}	
+}
 
 void AddInstr::gen_asm(ostream &o) {
 	int offset;
@@ -105,14 +126,15 @@ void MulInstr::gen_asm(ostream &o) {
 	}
 	o <<", %rax\n";
 	
-	o << "	imulq  ";
+	o << "	mulq  ";
 	if(y == "!bp"){
 		o << "%rbp";
 	}else{
 		offset = bb->get_cfg()->get_var_index(y);
 		o << offset << "(%rbp)";
 	}
-	o <<", %rax\n";
+	o << "\n";
+	/*o <<", %rax\n";*/
 	
 	o << "	movq  ";
 	o << "%rax, ";
@@ -125,7 +147,33 @@ void MulInstr::gen_asm(ostream &o) {
 }
 
 void DivInstr::gen_asm(ostream &o) {
+	int offset;
+	o << "	movq  ";
+	if(x == "!bp"){
+		o << "%rbp";
+	}else{
+		offset = bb->get_cfg()->get_var_index(x);
+		o << offset << "(%rbp)";
+	}
+	o <<", %rax\n";
+
+	o << "	divq  ";
+	if(y == "!bp"){
+		o << "%rbp";
+	}else{
+		offset = bb->get_cfg()->get_var_index(y);
+		o << offset << "(%rbp)";
+	}
+	o <<"\n";
 	
+	o << "	movq  ";
+	o << "%rax, ";
+	if(d == "!bp"){
+		o << "%rbp\n";
+	}else{
+		offset = bb->get_cfg()->get_var_index(d);
+		o << offset << "(%rbp)\n";
+	}
 }
 
 void CmpInstr::gen_asm(ostream &o) {
@@ -139,7 +187,9 @@ void CallInstr::gen_asm(ostream &o) {
 		o << "	movl	";
 		o << offset << "(%rbp)";
 		o << ", %edi\n";
-		o << "	call putchar\n";
+		o << "	call putchar@PLT\n";
+	}else{
+		
 	}
 }
 

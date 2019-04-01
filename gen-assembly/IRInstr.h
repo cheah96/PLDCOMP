@@ -19,7 +19,8 @@ class IRInstr {
 		div,
 		rmem,
 		wmem,
-		call, 
+		call,
+		copy, 
 		cmp_eq,
 		cmp_lt,
 		cmp_le,
@@ -58,6 +59,16 @@ class LdconstInstr : public IRInstr {
 	private: 
 		string d;
 		string c;
+};
+
+class 	CopyInstr : public IRInstr {
+	public:
+		CopyInstr(BasicBlock* bb_, Type t, string destination, string source) : IRInstr(bb_, ldconst, t), d(destination), s(source) {}
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+	private: 
+		string d;
+		string s;
 };
 
 class AddInstr : public IRInstr {

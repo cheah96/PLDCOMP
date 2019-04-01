@@ -1,12 +1,13 @@
 #include "CFG.h"
 #include "../ast-nodes/Function.h"
 
-CFG::CFG(Function * func)
+CFG::CFG(Function * func, Program* oneProg)
 {
 	BasicBlock* bb = new BasicBlock(this);
 	bbs.push_back(bb);
 	current_bb = bb;
 	ast = func;
+	prog = oneProg;
 	nextFreeSymbolIndex = 0;
 	nextBBnumber = 1;
 }
