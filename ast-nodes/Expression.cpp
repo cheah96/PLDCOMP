@@ -54,7 +54,84 @@ string ExprBinary::buildIR(CFG * cfg){
             params.push_back(var1);
             params.push_back(var2);
             cfg->current_bb->add_IRInstr(IRInstr::div,this->getType(),params);
-            break;   
+            break;
+		default:
+	    	break;   
     }
     return var3;
+}
+
+string ExprUnary::buildIR(CFG * cfg){
+    OPTYPE value = myOp->getValue();
+    string var = op->buildIR(cfg);
+	string returnStr = "";
+	vector<string> params;
+	string tmp = cfg->create_new_tempvar(this->getType());
+	params.push_back(tmp);
+	params.push_back("1");
+	cfg->current_bb->add_IRInstr(IRInstr::ldconst,this->getType(),params);
+	vector<string> para1;
+	vector<string> para2;
+	vector<string> para3;
+	string tmp1 = "";
+	string tmp2 = "";
+    switch(value){
+        case POSTINC:
+			cout << "POSTINCINqsf" << endl;
+			tmp1 = cfg->create_new_tempvar(this->getType());
+			para1.push_back(tmp1);
+			para1.push_back(var);
+			cfg->current_bb->add_IRInstr(IRInstr::copy,this->getType(),para1);
+			tmp2 = cfg->create_new_tempvar(this->getType());
+            para2.push_back(tmp2);
+            para2.push_back(var);
+			para2.push_back(tmp);
+            cfg->current_bb->add_IRInstr(IRInstr::add,this->getType(),para2);
+            para3.push_back(var);
+			para3.push_back(tmp2);
+            cfg->current_bb->add_IRInstr(IRInstr::copy,this->getType(),para3);
+			cout << "POSTINCOUTdsqqsd" << endl;
+			returnStr = tmp1;
+            break;
+        case POSTDEC:
+			tmp1 = cfg->create_new_tempvar(this->getType());
+			para1.push_back(tmp1);
+			para1.push_back(var);
+			cfg->current_bb->add_IRInstr(IRInstr::copy,this->getType(),para1);
+			tmp2 = cfg->create_new_tempvar(this->getType());
+            para2.push_back(tmp2);
+            para2.push_back(var);
+			para2.push_back(tmp);
+            cfg->current_bb->add_IRInstr(IRInstr::sub,this->getType(),para2);
+            para3.push_back(var);
+			para3.push_back(tmp2);
+            cfg->current_bb->add_IRInstr(IRInstr::copy,this->getType(),para3);
+			returnStr = tmp1;
+            break;
+        case PREINC:
+			tmp2 = cfg->create_new_tempvar(this->getType());
+            para2.push_back(tmp2);
+            para2.push_back(var);
+			para2.push_back(tmp);
+            cfg->current_bb->add_IRInstr(IRInstr::add,this->getType(),para2);
+            para3.push_back(var);
+			para3.push_back(tmp2);
+            cfg->current_bb->add_IRInstr(IRInstr::copy,this->getType(),para3);
+			returnStr = var;
+            break;
+        case PREDEC:
+			tmp2 = cfg->create_new_tempvar(this->getType());
+            para2.push_back(tmp2);
+            para2.push_back(var);
+			para2.push_back(tmp);
+            cfg->current_bb->add_IRInstr(IRInstr::sub,this->getType(),para2);
+            para3.push_back(var);
+			para3.push_back(tmp2);
+            cfg->current_bb->add_IRInstr(IRInstr::copy,this->getType(),para3);
+			returnStr = var;
+            break; 
+		default:
+	    	break;  
+    }
+    return returnStr;
 }

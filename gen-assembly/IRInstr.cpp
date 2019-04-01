@@ -32,6 +32,27 @@ void LdconstInstr::gen_asm(ostream &o) {
 	}	
 }
 
+void CopyInstr::gen_asm(ostream &o) {
+	int offsetD = bb->get_cfg()->get_var_index(d);
+	int offsetS = bb->get_cfg()->get_var_index(s);
+	if(t.getText() == "int"){
+		o << "\n";
+		o << "	movq  ";
+		o << offsetS <<"(%rbp)";
+    	o << "," << "%rax\n";
+		o << "	movq  ";
+		o << "%rax";
+    	o << "," << offsetD <<"(%rbp)\n";
+		o << "\n";
+	}else if(t.getText() == "char"){
+		o << "	movb  ";
+		o << offsetS <<"(%rbp)";
+    	o << "," << "%dl\n";
+		o << "	movb  ";
+		o << "%dl";
+    	o << "," << offsetD <<"(%rbp)\n";
+	}	
+}
 
 void AddInstr::gen_asm(ostream &o) {
 	int offset;
@@ -134,8 +155,6 @@ void DivInstr::gen_asm(ostream &o) {
 		o << offset << "(%rbp)";
 	}
 	o <<", %rax\n";
-	o <<"cltd\n";	
-
 	o << "	divq  ";
 	if(y == "!bp"){
 		o << "%rbp";

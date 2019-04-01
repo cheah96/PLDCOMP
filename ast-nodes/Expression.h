@@ -9,10 +9,12 @@ using namespace std;
 class CFG;
 
 enum OPTYPE{
-  ADD,SUB,MULT,DIV
+  ADD,SUB,MULT,DIV,POSTINC,POSTDEC,PREINC,PREDEC
 };
 
-const string opNames[4] = {"+","-","*","/"};
+const string opNames[8] = {"+","-","*","/","++","--","++","--"};
+
+/*Node which represents the operator of binary expression*/
 
 /*Node which represents the operator of binary expression*/
 
@@ -93,5 +95,18 @@ class ExprBinary : public Expr {
     protected:
 		Expr* op1;
 		Expr* op2;
+		Operator* myOp;
+};
+
+class ExprUnary : public Expr {
+    public:
+		ExprUnary(OPTYPE oneType, Expr* oneOp) : op(oneOp){ myOp = new Operator(oneType); type=Type("int");}
+		virtual ~ExprUnary(){ delete op;delete myOp; }
+		int eval (){
+			return 0;
+		}
+		string buildIR(CFG * cfg);
+    protected:
+		Expr* op;
 		Operator* myOp;
 };
