@@ -14,7 +14,7 @@ Program::~Program() {
 
 string Program::buildIR(){
     for(Function* func : funcs){
-        CFG* cfg = new CFG(func);
+        CFG* cfg = new CFG(func,this);
         func->buildIR(cfg);
         cfgs.push_back(cfg);
     }
@@ -29,6 +29,16 @@ void Program::generateCode(ofstream& o){
 		}
 		cfg->gen_asm(o);
 	}
+}
+
+Type* Program::getFuncReturn(string name){
+	Type* returnType = nullptr;
+	for(Function* func : funcs){
+		if(func->getName() == name){
+			returnType = func->getReturnType();
+		}
+	}
+	return returnType;
 }
 /*void Program::addFunction(Function* func){
     funcs.push_back(func);

@@ -7,12 +7,15 @@
 
 using namespace std;
 
+/*Node which represents a definition of a variable*/
+
 class CFG;
 
 class DefVar : public Statement{
 	public:
 		DefVar() {}
 		virtual ~DefVar(){}
+		/*Creates the correspondant IR instruction of this node in CFG*/
 		virtual string buildIR(CFG * cfg) = 0;
 };
 
