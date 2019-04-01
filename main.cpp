@@ -10,6 +10,8 @@
 using namespace antlr4;
 using namespace std;
 
+/*Main file which lauchs the compilation*/
+
 int main(int argc, const char ** argv) 
 {
     ifstream is (argv[1]);
@@ -44,13 +46,13 @@ int main(int argc, const char ** argv)
 
     Program* prog = (Program*)visitor.visit(tree);
     prog->buildIR();
+	cout << "sqd"<< endl;
     ofstream o;
     o.open("test.s");
 
     prog->generateCode(o);
 	cout << "PLD COMP Success" << endl;
     
-    //cout << r <<endl;
 
     return 0;
 }
