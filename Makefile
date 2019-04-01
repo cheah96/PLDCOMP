@@ -1,5 +1,5 @@
-ANTLR=./antlr4
-ANTLRRUNTIME=./ANTLR4-CPP
+ANTLR=/shares/public/tp/ANTLR4-CPP/bin/antlr4
+ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP
 
 default:
 	$(ANTLR) -visitor -no-listener -Dlanguage=Cpp  Main.g4

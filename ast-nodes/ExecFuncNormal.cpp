@@ -6,8 +6,10 @@ ExecFuncNormal::~ExecFuncNormal(){
 }
 
 string ExecFuncNormal::buildIR(CFG* cfg){
-	Type* myType = cfg->prog->getFuncReturn(funcName);
-	string right = cfg->create_new_tempvar(*myType);
+	type = *(cfg->prog->getFuncReturn(funcName));
+	cout << funcName<< endl;
+	cout << type.getText()<< endl;
+	string right = cfg->create_new_tempvar(type);
 	vector<string> funcParams = myParams->buildIR(cfg);
         vector<string> params;
         params.push_back(right);
@@ -15,6 +17,6 @@ string ExecFuncNormal::buildIR(CFG* cfg){
         for(string s : funcParams){
 		params.push_back(s);
         }
-        cfg->current_bb->add_IRInstr(IRInstr::call,*myType,params);
+        cfg->current_bb->add_IRInstr(IRInstr::call,type,params);
 	return right;
 }

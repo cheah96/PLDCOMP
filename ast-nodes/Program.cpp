@@ -40,6 +40,3 @@ Type* Program::getFuncReturn(string name){
 	}
 	return returnType;
 }
-/*void Program::addFunction(Function* func){
-    funcs.push_back(func);
-}*/

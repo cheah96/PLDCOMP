@@ -3,18 +3,18 @@
 #include "CFG.h"
 
 void RetInstr::gen_asm(ostream &o) {
-	Type retType = bb->get_ftg()->get_var_type("retValue");
+	Type retType = bb->get_cfg()->get_var_type("retValue");
 	if(retType.getText()!= "void"){
 	    int offsetReturn = bb->get_cfg()->get_var_index("retValue");
 	    int offsetValue = bb->get_cfg()->get_var_index(value);
 	    if(retType.getText() == "int"){
 		    o << "	movl  ";
         	o << offsetValue <<"(%rbp)";
-		    o << "," << offset <<"(%rbp)";
+		    o << "," << offsetReturn <<"(%rbp)";
 	    }else if(retType.getText() == "char"){
 		    o << "	movb  ";
-        	o << offset <<"(%rbp)";
-		    o << "," << offset <<"(%rbp)";
+        	o << offsetValue <<"(%rbp)";
+		    o << "," << offsetReturn <<"(%rbp)";
 	    }
 	}
 }
@@ -190,6 +190,12 @@ void CallInstr::gen_asm(ostream &o) {
 	    o << "%" << ParamRegister[i] << "\n";
 	}
 	o << "        call " << label << "\n";
+	if(dest != ""){
+	    offset = bb->get_cfg()->get_var_index(dest);
+	    o << "        movq    ";
+	    o << "%rax, ";
+	    o << offset << "(%rbp)\n ";
+	}
 }
 
 void WmemInstr::gen_asm(ostream &o) {

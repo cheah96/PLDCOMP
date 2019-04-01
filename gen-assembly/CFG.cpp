@@ -10,9 +10,7 @@ CFG::CFG(Function * func, Program* oneProg)
 	prog = oneProg;
 	nextFreeSymbolIndex = 0;
 	nextBBnumber = 1;
-	if( ast->getReturnType()->getText() != "void" && ast->getName() == "main"){
-	    add_to_symbol_table("retValue", *(ast->getReturnType()));
-	} 
+	add_to_symbol_table("retValue", *(ast->getReturnType()));
 }
 void CFG::gen_asm(ostream& o) {
 	o << "	.globl	" << ast->getName() << endl; /*<< "(";
@@ -57,11 +55,11 @@ void CFG::gen_asm_prologue(ostream& o) {
 }
 
 void CFG::gen_asm_epilogue(ostream& o) {
-    Type* retType = get_var_type("retValue");
+    Type retType = get_var_type("retValue");
 	if(retType.getText() != "void"){
         int offset = get_var_index("retValue");
 	    o << "	movq  ";
-	    o << offset <<"(%rbp), (%rax)\n";
+	    o << offset <<"(%rbp), %rax\n";
 	}
 	string epi = ".EPILOG" + ast->getName() +" : \n";
     epi += "    addq    $";

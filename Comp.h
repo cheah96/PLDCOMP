@@ -13,15 +13,9 @@
 #include "ast-nodes/DeclarVar.h"
 #include "ast-nodes/Param.h"
 #include "ast-nodes/ExecFuncNormal.h"
-<<<<<<< HEAD
-#include "ast-nodes/ExprStat.h" 
-#include "ast-nodes/PutChar.h" 
-#include "ast-nodes/ParamDec.h" 
-=======
 #include "ast-nodes/ExprStat.h"
 #include "ast-nodes/PutChar.h"
 #include "ast-nodes/ParamDec.h"
->>>>>>> 72383e0f38654d5ca55508d0451ceb2b8e1c7215
 
 using namespace std;
 
@@ -63,11 +57,7 @@ public:
 
     antlrcpp::Any visitConst(MainParser::ConstContext *context) override {
        int val = (int)stoi(context->INT()->getText());
-<<<<<<< HEAD
-        return (Expr*)new ExprInt(val); 
-=======
         return (Expr*)new ExprInt(val);
->>>>>>> 72383e0f38654d5ca55508d0451ceb2b8e1c7215
     }
 
     antlrcpp::Any visitVar(MainParser::VarContext *context) override {
@@ -269,9 +259,7 @@ public:
             stat = visit(context->defvar()).as<Statement*>();
         }
         if(context->exprstat() != nullptr){
-			cout << "ExprStatIN" << endl;
             stat = visit(context->exprstat()).as<Statement*>();
-			cout << "ExprStatOUT" << endl;
         }
         if(context->declarvar() != nullptr){
             stat = visit(context->declarvar()).as<Statement*>();
