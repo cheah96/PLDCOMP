@@ -10,9 +10,24 @@ expr: expr ('*'|'/') expr # multdiv
 	| INT			# const
 	| VAR			# var
 	|  CHAR 		# char
-	| '(' expr ')'  # par
+	| '(' expr ')'  	# par
 	| execfunc		# exfunc
+	| VAR ('++'|'--')	# postop
+	| ('++'|'--') VAR	# preop 
+	| expr ('&&'|'||') expr	# exprBin
+	| expr compare expr 	# cmp
 	;
+
+compare: ('<'|'>') '='?
+	| ('!'|'=') '='
+	;
+
+ifins: 'if' '(' expr ')' (statement|block) elseifins* elseins;
+
+elseifins : 'else if' '(' expr ')' (statement|block) ;
+
+elseins: 'else' (statement|block) ; 
+
 
 declarvar: TYPE VAR (',' VAR)* ';'
 	;
@@ -21,12 +36,17 @@ defvar : TYPE VAR '=' expr ';' #defWithDeclar
 	| VAR '=' expr ';' #defWithoutDeclar
 	;
 
-deffunc : TYPE VAR '(' paramdec? ')' block 
+deffunc : TYPE VAR '(' paramdec? ')' block #defFuncNormal
+	| 'void' VAR '(' paramdec? ')' block #defFuncVoid
 	;
 
-declarfunc : TYPE VAR '(' paramdec? ')' ';';  
+declarfunc : TYPE VAR '(' paramdec? ')' ';' #declarFuncNormal
+	| 'void' VAR '(' paramdec? ')' ';' #declarFuncVoid
+	;  
 
-execfunc : VAR '(' param? ')';
+execfunc : 'putchar' '(' expr ')' #putchar
+	| VAR '(' param? ')' #normalExec
+	;
 
 block : '{' statement* '}';
 
@@ -36,6 +56,7 @@ statement : ret
 	| defvar
 	| exprstat 
 	| declarvar
+	| ifins
 	;
 
 ret : 'return' expr ';';
@@ -46,7 +67,6 @@ param :  expr (',' expr)*;
 
 TYPE: 'int'
 	| 'char'
-	| 'void'
 	;
 
 INT : [0-9]+ ;
