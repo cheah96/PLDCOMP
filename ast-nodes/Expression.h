@@ -14,6 +14,8 @@ enum OPTYPE{
 
 const string opNames[4] = {"+","-","*","/"};
 
+/*Node which represents the operator of binary expression*/
+
 class Operator{
 	public:
 		Operator(OPTYPE oneValue) : value(oneValue) { }
@@ -28,11 +30,14 @@ class Operator{
 		OPTYPE value;
 };
 
+/*Node which represents an expression*/
+
 class Expr {
    public:
 		Expr() : type("unknown") { }
 		virtual ~Expr(){}
 		virtual int eval () = 0;
+		/*Creates the correspondant IR instruction of this node in CFG*/
 		virtual string buildIR(CFG * cfg) = 0;
 		virtual Type getType(){
 			return type;

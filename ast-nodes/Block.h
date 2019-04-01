@@ -4,6 +4,8 @@
 #include <fstream>
 using namespace std;
 
+/*Node which represents a block containing a sequence of statements*/
+
 class Block{
 	public:
 		Block() { }
@@ -11,6 +13,7 @@ class Block{
 		void addStatement(Statement* stat){
 			stats.push_back(stat);
 		}
+		/*Creates the correspondant IR instruction of this node in CFG*/
 		string buildIR(CFG* cfg);
       
     protected:

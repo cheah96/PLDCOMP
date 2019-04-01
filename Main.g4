@@ -21,12 +21,17 @@ defvar : TYPE VAR '=' expr ';' #defWithDeclar
 	| VAR '=' expr ';' #defWithoutDeclar
 	;
 
-deffunc : TYPE VAR '(' paramdec? ')' block 
+deffunc : TYPE VAR '(' paramdec? ')' block #defFuncNormal
+	| 'void' VAR '(' paramdec? ')' block #defFuncVoid
 	;
 
-declarfunc : TYPE VAR '(' paramdec? ')' ';';  
+declarfunc : TYPE VAR '(' paramdec? ')' ';' #declarFuncNormal
+	| 'void' VAR '(' paramdec? ')' ';' #declarFuncVoid
+	;  
 
-execfunc : VAR '(' param? ')';
+execfunc : 'putchar' '(' expr ')' #putchar
+	| VAR '(' param? ')' #normalExec
+	;
 
 block : '{' statement* '}';
 
@@ -46,7 +51,6 @@ param :  expr (',' expr)*;
 
 TYPE: 'int'
 	| 'char'
-	| 'void'
 	;
 
 INT : [0-9]+ ;

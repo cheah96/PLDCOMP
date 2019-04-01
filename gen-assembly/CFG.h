@@ -13,9 +13,11 @@
 
 using namespace std;
 class Function; 
+class Program;
 class CFG {
 	public:
-		CFG(Function* ast);
+		const string param_register[6] = {"rdi","rsi","rdx","rcx","r8","r9"};
+		CFG(Function* ast, Program* oneProg);
 
 		Function* ast; /**< The AST this CFG comes from */
 		
@@ -36,6 +38,9 @@ class CFG {
 		// basic block management
 		string new_BB_name();
 		BasicBlock* current_bb;
+
+		//The program node that this CFG belongs to
+		Program* prog;
 
  	protected:
 		map <string, Type> SymbolType; /**< part of the symbol table  */

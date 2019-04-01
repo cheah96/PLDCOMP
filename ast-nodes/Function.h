@@ -3,23 +3,27 @@
 #include <fstream>
 #include <vector>
 #include "Type.h"
-//#include "DecFunc.h"
+#include "ParamDec.h"
 using namespace std;
 
 class CFG;
 
 class Parameter;
 
+/*Node which represents a function (a declaration of function or a definition of function)*/
+
 class Function{
     public:
-        Function(string oneName, Type* oneType) : name(oneName), returnType(oneType){}
+        Function(string oneName, Type* oneType, ParamDec* oneDec) : name(oneName), returnType(oneType), decParams(oneDec){}
         virtual ~Function(){}
-        virtual void addParameter(Parameter* param) = 0;
+	/*Creates the correspondant IR instruction of this node in CFG*/
         virtual string buildIR(CFG* cfg) = 0;
         virtual string getName() = 0;
+        ParamDec* getParams(){ return decParams; }
+	    Type* getReturnType(){ return returnType; }
 
     protected:
 	    string name;
     	Type* returnType;
-    	vector<Parameter*> params;
+    	ParamDec* decParams;
 };

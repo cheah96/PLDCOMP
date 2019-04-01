@@ -3,21 +3,20 @@
 #include "CFG.h"
 
 void RetInstr::gen_asm(ostream &o) {
-	/*int offset = bb->get_cfg()->get_var_index("retvalue");
-	o << "	movq  ";
-	o << "$" << value;
-    o << "," << offset <<"(%rbp)\n";*/
-    int offset = bb->get_cfg()->get_var_index(value);
-	if(t.getText() == "int"){
-		o << "	movl  ";
-    	o << offset <<"(%rbp)";
-		o << "," << "%eax\n";
-	}else if(t.getText() == "char"){
-		o << "	movb  ";
-    	o << offset <<"(%rbp)";
-		o << "," << "%eax\n";
+	Type retType = bb->get_ftg()->get_var_type("retValue");
+	if(retType.getText()!= "void"){
+	    int offsetReturn = bb->get_cfg()->get_var_index("retValue");
+	    int offsetValue = bb->get_cfg()->get_var_index(value);
+	    if(retType.getText() == "int"){
+		    o << "	movl  ";
+        	o << offsetValue <<"(%rbp)";
+		    o << "," << offset <<"(%rbp)";
+	    }else if(retType.getText() == "char"){
+		    o << "	movb  ";
+        	o << offset <<"(%rbp)";
+		    o << "," << offset <<"(%rbp)";
+	    }
 	}
-    
 }
 
 void LdconstInstr::gen_asm(ostream &o) {
@@ -105,14 +104,15 @@ void MulInstr::gen_asm(ostream &o) {
 	}
 	o <<", %rax\n";
 	
-	o << "	imulq  ";
+	o << "	mulq  ";
 	if(y == "!bp"){
 		o << "%rbp";
 	}else{
 		offset = bb->get_cfg()->get_var_index(y);
 		o << offset << "(%rbp)";
 	}
-	o <<", %rax\n";
+	o << "\n";
+	/*o <<", %rax\n";*/
 	
 	o << "	movq  ";
 	o << "%rax, ";
@@ -125,7 +125,34 @@ void MulInstr::gen_asm(ostream &o) {
 }
 
 void DivInstr::gen_asm(ostream &o) {
+	int offset;
+	o << "	movq  ";
+	if(x == "!bp"){
+		o << "%rbp";
+	}else{
+		offset = bb->get_cfg()->get_var_index(x);
+		o << offset << "(%rbp)";
+	}
+	o <<", %rax\n";
+	o <<"cltd\n";	
+
+	o << "	divq  ";
+	if(y == "!bp"){
+		o << "%rbp";
+	}else{
+		offset = bb->get_cfg()->get_var_index(y);
+		o << offset << "(%rbp)";
+	}
+	o <<"\n";
 	
+	o << "	movq  ";
+	o << "%rax, ";
+	if(d == "!bp"){
+		o << "%rbp\n";
+	}else{
+		offset = bb->get_cfg()->get_var_index(d);
+		o << offset << "(%rbp)\n";
+	}
 }
 
 void CmpInstr::gen_asm(ostream &o) {
@@ -134,13 +161,16 @@ void CmpInstr::gen_asm(ostream &o) {
 
 void CallInstr::gen_asm(ostream &o) {
 	int offset;
-	if(label == "putchar"){
-		offset = bb->get_cfg()->get_var_index(params[0]);
-		o << "	movl	";
-		o << offset << "(%rbp)";
-		o << ", %edi\n";
-		o << "	call putchar\n";
+	if(params.size() > 6) {
+	    cout << "Error";
 	}
+	for(int i =0; i<params.size(); ++i) {
+	    offset = bb->get_cfg()->get_var_index(params[i]);
+	    o << "        movq    ";
+	    o << offset << "(%rbp), ";
+	    o << "%" << ParamRegister[i] << "\n";
+	}
+	o << "        call " << label << "\n";
 }
 
 void WmemInstr::gen_asm(ostream &o) {

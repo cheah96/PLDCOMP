@@ -10,6 +10,8 @@
 using namespace antlr4;
 using namespace std;
 
+/*Main file which lauchs the compilation*/
+
 int main(int argc, const char ** argv) 
 {
     ifstream is (argv[1]);
@@ -50,7 +52,6 @@ int main(int argc, const char ** argv)
     prog->generateCode(o);
 	cout << "PLD COMP Success" << endl;
     
-    //cout << r <<endl;
 
     return 0;
 }
