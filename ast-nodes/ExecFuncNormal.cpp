@@ -10,7 +10,10 @@ string ExecFuncNormal::buildIR(CFG* cfg){
 	cout << funcName<< endl;
 	cout << type.getText()<< endl;
 	string right = cfg->create_new_tempvar(type);
-	vector<string> funcParams = myParams->buildIR(cfg);
+	vector<string> funcParams;
+	if(myParams != nullptr){
+		funcParams = myParams->buildIR(cfg);
+	}
         vector<string> params;
         params.push_back(right);
         params.push_back(funcName);

@@ -9,5 +9,8 @@ ParamDec::~ParamDec(){
 }
 
 string ParamDec::buildIR(CFG* cfg){
+	for(size_t i = 0; i < myDecs.size(); i++){
+		cfg->add_to_symbol_table(myDecs[i]->getName(),*(myDecs[i]->getType()));
+	}
 	return "";
 }
