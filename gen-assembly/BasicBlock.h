@@ -26,6 +26,8 @@ class BasicBlock {
 	void add_IRInstr(IRInstr::Operation op, Type t, vector<string> params);
 
 	string get_label() { return label;}
+	BasicBlock* get_exit_true() { return exit_true; }
+	BasicBlock* get_exit_false() { return exit_false; }
 
 	CFG* get_cfg() { return cfg;}
 

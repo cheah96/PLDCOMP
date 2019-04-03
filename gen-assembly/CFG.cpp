@@ -1,17 +1,31 @@
 #include "CFG.h"
 #include "../ast-nodes/Function.h"
 
-CFG::CFG(Function * func, Program* oneProg)
-{
+CFG::CFG(Function * func, Program* oneProg) {
 	BasicBlock* bb = new BasicBlock(this);
 	bbs.push_back(bb);
 	current_bb = bb;
+	BasicBlock* bbExit = new BasicBlock(this, ".EPILOG" + ast->getName());
+	bbs.push_back(bbExit);
 	ast = func;
 	prog = oneProg;
 	nextFreeSymbolIndex = 0;
 	nextBBnumber = 1;
 	add_to_symbol_table("retValue", *(ast->getReturnType()));
 }
+
+void add_bb(BasicBlock* bb) {
+    BasicBlock* bbExit = bbs.back();
+    bbs.popBack();
+    bbs.push_back(bb);
+    bbs.push_back(bbExit);
+	nextBBnumber += 1;
+}
+
+string new_BB_name() {
+    return ".LBB_" + ast->getName() + "_" + to_string(nextBBnumber);
+}
+
 void CFG::gen_asm(ostream& o) {
 	o << "	.globl	" << ast->getName() << endl; /*<< "(";
 	for (int i = 0 ; i < ast->getParams()->getParameters().size(); i++)
@@ -27,8 +41,8 @@ void CFG::gen_asm(ostream& o) {
 	for (BasicBlock* bb: bbs) {
 		bb->gen_asm(o);
 	}
-	o << endl;
-	gen_asm_epilogue(o);
+	/*o << endl;
+	gen_asm_epilogue(o);*/
 }
 
 string CFG::IR_reg_to_asm(string reg) {
