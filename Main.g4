@@ -28,6 +28,7 @@ elseifins : 'else if' '(' expr ')' (statement|block) ;
 
 elseins: 'else' (statement|block) ; 
 
+whileins : 'while' '(' expr ')' (statement|block) ;
 
 declarvar: TYPE VAR (',' VAR)* ';'
 	;
@@ -57,6 +58,7 @@ statement : ret
 	| exprstat 
 	| declarvar
 	| ifins
+	| whileins
 	;
 
 ret : 'return' expr ';';

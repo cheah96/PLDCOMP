@@ -1,19 +1,19 @@
+int square (int a) {
+    return a*a;
+}
+
 int main(int arg){
-	if (4>3) {
-	    putchar('x');
+	int i = 3;
+    if (i != square(2)) {
+        i ++;
+    }
+	while(i < 3){
+	    i ++;
+	    putchar('Z');
 	}
-	if (6<4) 
-	    putchar('q');
-	else { 
-	    putchar('a');
-	    if (5>3) 
-	        putchar('c');
-	}
-	if (3<4) {
-	    putchar('\n');
-	}
-	if ('c') {
-	    putchar('b');
-	}
+    if (i < 4) {
+        i = 79;
+    }
+    return i;
 }
 

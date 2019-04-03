@@ -74,6 +74,7 @@ string ExprBinary::buildIR(CFG * cfg){
             cfg->current_bb->add_IRInstr(IRInstr::cmp_le,this->getType(),params);
             break;
 		case LESSEQ:
+		    cout << "dqsdq" << endl;
 			params.push_back(var3);
             params.push_back(var1);
             params.push_back(var2);
@@ -83,15 +84,13 @@ string ExprBinary::buildIR(CFG * cfg){
 			params.push_back(var3);
             params.push_back(var1);
             params.push_back(var2);
-			params.push_back("eq");
             cfg->current_bb->add_IRInstr(IRInstr::cmp_eq,this->getType(),params);
             break;
 		case UNEQUAL:
 			params.push_back(var3);
             params.push_back(var1);
             params.push_back(var2);
-			params.push_back("ueq");
-            cfg->current_bb->add_IRInstr(IRInstr::cmp_eq,this->getType(),params);/*ueq*/
+            cfg->current_bb->add_IRInstr(IRInstr::cmp_neq,this->getType(),params);/*ueq*/
             break;
 		default:
 	    	break;   

@@ -4,6 +4,7 @@ If::If(Expr* oneExpr, Statement* oneStatement) : myCondition(oneExpr)
 {
 	myBlock = new Block;
 	myBlock->addStatement(oneStatement);
+	myElse = nullptr;
 }
 
 If::~If()
