@@ -16,6 +16,7 @@ class Function;
 class Program;
 class CFG {
 	public:
+		const string param_register[6] = {"rdi","rsi","rdx","rcx","r8","r9"};
 		CFG(Function* ast, Program* oneProg);
 
 		Function* ast; /**< The AST this CFG comes from */

@@ -10,9 +10,18 @@ CFG::CFG(Function * func, Program* oneProg)
 	prog = oneProg;
 	nextFreeSymbolIndex = 0;
 	nextBBnumber = 1;
+	add_to_symbol_table("retValue", *(ast->getReturnType()));
 }
 void CFG::gen_asm(ostream& o) {
-	o << "	.globl	" << ast->getName() << endl;
+	o << "	.globl	" << ast->getName() << endl; /*<< "(";
+	for (int i = 0 ; i < ast->getParams()->getParameters().size(); i++)
+	{
+	    o << ast->getParams()->getParameters()[i]->getType()->getText();
+	    if (i < ast->getParams()->getParameters().size()-1) {
+	        o << ", ";
+	    }
+	}
+	o << ")" << endl;*/
 	o << ast->getName() << ":" << endl;
 	gen_asm_prologue(o);
 	for (BasicBlock* bb: bbs) {
@@ -31,17 +40,28 @@ string CFG::IR_reg_to_asm(string reg) {
 }
 
 void CFG::gen_asm_prologue(ostream& o) {
-	string pro = "";
+	string pro = ".PROLOG" + ast->getName() +" : \n";
     pro += "    pushq   %rbp\n";
     pro += "    movq    %rsp, %rbp\n";
     pro += "    subq    $";
     pro += to_string(nextFreeSymbolIndex+8);
     pro += ",   %rsp\n";
+	for (int i = 0 ; i < ast->getParams()->getParameters().size(); i++)
+	{
+	    int offset = get_var_index(ast->getParams()->getParameters()[i]->getName());
+	    pro += "    movq    %" + param_register[i] + ", " + to_string(offset) + "(%rbp) \n";
+	}
 	o << pro << endl;
 }
 
 void CFG::gen_asm_epilogue(ostream& o) {
-	string epi = "";
+    Type retType = get_var_type("retValue");
+	if(retType.getText() != "void"){
+        int offset = get_var_index("retValue");
+	    o << "	movq  ";
+	    o << offset <<"(%rbp), %rax\n";
+	}
+	string epi = ".EPILOG" + ast->getName() +" : \n";
     epi += "    addq    $";
     epi += to_string(nextFreeSymbolIndex+8);
     epi += ",   %rsp\n";
@@ -56,7 +76,7 @@ void CFG::add_to_symbol_table(string name, Type t) {
 	if(t.getText() == "int"){
 		nextFreeSymbolIndex +=8;
 	}else if(t.getText() == "char"){
-		nextFreeSymbolIndex +=1;
+		nextFreeSymbolIndex +=8;
 	}
 	SymbolIndex.insert(make_pair(name,nextFreeSymbolIndex));		
 }
@@ -66,7 +86,7 @@ string CFG::create_new_tempvar(Type t) {
 	if(t.getText() == "int"){
 		name = "!tmp" + to_string(nextFreeSymbolIndex+8);
 	}else if(t.getText() == "char"){
-		name = "!tmp" + to_string(nextFreeSymbolIndex+1);
+		name = "!tmp" + to_string(nextFreeSymbolIndex+8);
 	}
 	add_to_symbol_table(name,t);
 	return name;

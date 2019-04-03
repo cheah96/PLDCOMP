@@ -135,6 +135,7 @@ class CallInstr : public IRInstr {
 				params.push_back(oneParams.at(i));
 			}
 		}
+		const string ParamRegister[6] = {"rdi","rsi","rdx","rcx","r8","r9"};
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :

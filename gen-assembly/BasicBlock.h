@@ -29,6 +29,14 @@ class BasicBlock {
 
 	CFG* get_cfg() { return cfg;}
 
+	BasicBlock* get_exit_true(){return exit_true;}
+
+	BasicBlock* get_exit_false(){return exit_false;}
+
+	void set_exit_true(BasicBlock* oneBlock){exit_true = oneBlock;}
+
+	void set_exit_false(BasicBlock* oneBlock){exit_false = oneBlock;}
+
  protected:
 	// No encapsulation whatsoever here. Feel free to do better.
 	BasicBlock* exit_true;  /**< pointer to the next basic block, true branch. If nullptr, return from procedure */ 
