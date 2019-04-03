@@ -22,7 +22,7 @@ compare: ('<'|'>') '='?
 	| ('!'|'=') '='
 	;
 
-ifins: 'if' '(' expr ')' (statement|block) elseifins* elseins;
+ifins: 'if' '(' expr ')' (statement|block) elseifins* elseins?;
 
 elseifins : 'else if' '(' expr ')' (statement|block) ;
 

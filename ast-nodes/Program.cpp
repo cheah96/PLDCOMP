@@ -24,7 +24,7 @@ string Program::buildIR(){
 void Program::generateCode(ofstream& o){
 	o << "   .text " << endl;
 	for(CFG* cfg : cfgs){
-	    cout << cfg->ast->getName() << endl;
+	    //cout << cfg->ast->getName() << endl;
 		if (cfg == nullptr) {
 			continue;
 		}

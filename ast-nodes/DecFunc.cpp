@@ -7,7 +7,7 @@ DecFunc::~DecFunc() {
     }
     params.clear();*/
     if(decParams != nullptr){
-	delete decParams;
+	    delete decParams;
     }
     delete returnType;
 }

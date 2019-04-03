@@ -7,8 +7,6 @@ ExecFuncNormal::~ExecFuncNormal(){
 
 string ExecFuncNormal::buildIR(CFG* cfg){
 	type = *(cfg->prog->getFuncReturn(funcName));
-	cout << funcName<< endl;
-	cout << type.getText()<< endl;
 	string right = cfg->create_new_tempvar(type);
 	vector<string> funcParams;
 	if(myParams != nullptr){

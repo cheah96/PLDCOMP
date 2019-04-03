@@ -2,6 +2,7 @@
 #include "CFG.h"
 
 void BasicBlock::gen_asm(ostream &o) {
+    o << get_label() << " : \n";
 	for (IRInstr* instr : instrs) {
 	    /*if (instr == instrs.back() && dynamic_cast<CmpInstr*>(instrs.back()) == nullptr) {
 	        switch(instr.getOp()) {
@@ -34,13 +35,12 @@ void BasicBlock::gen_asm(ostream &o) {
         jne     .LBB0_2*/
 		string lastAssigned = instrs.back()->getDestination();
 		int offset = get_cfg()->get_var_index(lastAssigned);
-		o << "   cmpl   $0, " << offset << "(%rbp)";
-		o << "   je  ";
+		o << "        cmpq   $0, " << offset << "(%rbp) \n";
+		o << "        je  ";
     	o << exit_false->get_label() <<" \n";
-	}else {
-		o << "      jmp  ";
-    	o << exit_true->get_label() <<" \n";
 	}
+	o << "        jmp  ";
+	o << exit_true->get_label() <<" \n";
 }
 
 void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> params) {

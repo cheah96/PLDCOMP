@@ -193,7 +193,7 @@ void CmpInstr::gen_asm(ostream &o) {
 	}
 	o <<", %rax\n";
 	
-	o << "	cmpl  ";
+	o << "	cmpq  ";
 	if(y == "!bp"){
 		o << "%rbp";
 	}else{
@@ -203,22 +203,30 @@ void CmpInstr::gen_asm(ostream &o) {
 	o <<", %rax\n";
 	switch(op) {
 	    case cmp_eq:
-	        o << "  sete  %cl \n";
+	        o << "        sete  %cl \n";
 	        break;
 	    case cmp_neq:
-	        o << "  setne  %cl \n";
+	        o << "        setne  %cl \n";
 	        break;
 	    case cmp_lt : 
-	        o << "  setne  %cl \n";
+	        o << "        setl  %cl \n";
 	        break;
 	    case cmp_le : 
-	        o << "  setle  %cl \n";
+	        o << "        setle  %cl \n";
 	        break;
 	    default :
 	        break;
 	}
-	o << "  andb  $1, %cl \n";
+	o << "        andb  $1, %cl \n";
 	
+	o << "	movq  ";
+	o << "$0, ";
+	if(dest == "!bp"){
+		o << "%rbp\n";
+	}else{
+		offset = bb->get_cfg()->get_var_index(dest);
+		o << offset << "(%rbp)\n";
+	}
 	o << "	movb  ";
 	o << "%cl, ";
 	if(dest == "!bp"){

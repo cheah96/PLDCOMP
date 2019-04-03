@@ -237,8 +237,6 @@ public:
 		Param* myParams = nullptr;
 		if(context->param() != nullptr){
 			myParams = (Param*)visit(context->param());
-		}else{
-			cout << "Pas de Param" << endl;
 		}
         ExecFuncNormal* ex = new ExecFuncNormal(funcName, myParams);
         return (Expr*)ex;
@@ -275,6 +273,9 @@ public:
         }
         if(context->declarvar() != nullptr){
             stat = visit(context->declarvar()).as<Statement*>();
+        }
+        if(context->ifins() != nullptr){
+            stat = visit(context->ifins()).as<Statement*>();
         }
         return stat;
     }

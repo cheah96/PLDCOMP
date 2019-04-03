@@ -3,7 +3,7 @@
 
 CFG::CFG(Function * func, Program* oneProg) {
 	ast = func;
-	BasicBlock* bb = new BasicBlock(this);
+	BasicBlock* bb = new BasicBlock(this, "." + ast->getName());
 	bbs.push_back(bb);
 	current_bb = bb;
 	BasicBlock* bbExit = new BasicBlock(this, ".EPILOG" + ast->getName());
@@ -62,10 +62,12 @@ void CFG::gen_asm_prologue(ostream& o) {
     pro += "    subq    $";
     pro += to_string(nextFreeSymbolIndex+8);
     pro += ",   %rsp\n";
-	for (int i = 0 ; i < ast->getParams()->getParameters().size(); i++)
-	{
-	    int offset = get_var_index(ast->getParams()->getParameters()[i]->getName());
-	    pro += "    movq    %" + param_register[i] + ", " + to_string(offset) + "(%rbp) \n";
+    if (ast->getParams() != nullptr) {
+	    for (int i = 0 ; i < ast->getParams()->getParameters().size(); i++)
+	    {
+	        int offset = get_var_index(ast->getParams()->getParameters()[i]->getName());
+	        pro += "    movq    %" + param_register[i] + ", " + to_string(offset) + "(%rbp) \n";
+	    }
 	}
 	o << pro << endl;
 }

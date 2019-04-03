@@ -1,17 +1,19 @@
-void p(char x) {
-    putchar(x);
-} 
-
-int square(int x) {
-    return x*x;
-}
-
-
 int main(int arg){
-    int x = 3;
-    int y = 4;
-	int z = x;
-	p('c');
-	p('\n');
-	return 40/x;
+	if (4>3) {
+	    putchar('x');
+	}
+	if (6<4) 
+	    putchar('q');
+	else { 
+	    putchar('a');
+	    if (5>3) 
+	        putchar('c');
+	}
+	if (3<4) {
+	    putchar('\n');
+	}
+	if ('c') {
+	    putchar('b');
+	}
 }
+

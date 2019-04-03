@@ -20,9 +20,6 @@ DefFunc::~DefFunc() {
 string DefFunc::buildIR(CFG* cfg){
 	if(decParams != nullptr){
 		decParams->buildIR(cfg);
-		cout << "In paramdec" << endl;
-	}else{
-		cout << "No paramdec" << endl;
 	}
     block->buildIR(cfg);
     return "";
