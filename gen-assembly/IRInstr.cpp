@@ -155,6 +155,8 @@ void DivInstr::gen_asm(ostream &o) {
 		o << offset << "(%rbp)";
 	}
 	o <<", %rax\n";
+	/*o <<"	cltd\n";*/
+	o <<"	cqto\n";
 	o << "	divq  ";
 	if(y == "!bp"){
 		o << "%rbp";

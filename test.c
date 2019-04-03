@@ -7,7 +7,8 @@ int square(int x) {
 }
 
 int main(int arg){
-    int x = 1;
-    int y = (x++)*2;
-	return square(y);
+    int x = 3;
+    int y = 4;
+	int z = x;
+	return 40/x;
 }
