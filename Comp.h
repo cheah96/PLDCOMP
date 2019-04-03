@@ -16,6 +16,8 @@
 #include "ast-nodes/ExprStat.h"
 #include "ast-nodes/PutChar.h"
 #include "ast-nodes/ParamDec.h"
+#include "ast-nodes/If.h"
+#include "ast-nodes/Else.h"
 
 using namespace std;
 
@@ -155,7 +157,12 @@ public:
     }
 
 	antlrcpp::Any visitCmp(MainParser::CmpContext *context) override {
-		return visitChildren(context);
+		Expr* op1 = visit(context->expr(0)).as<Expr*>();
+        Expr* op2 = visit(context->expr(1)).as<Expr*>();
+		Operator* op = visit(context->compare());
+		Expr* temp = new ExprBinary(op->getValue(),op1,op2);
+		delete op;
+		return temp;
     }
 
     antlrcpp::Any visitDeclarvar(MainParser::DeclarvarContext *context) override {
@@ -259,9 +266,7 @@ public:
             stat = visit(context->defvar()).as<Statement*>();
         }
         if(context->exprstat() != nullptr){
-			cout << "ExprStatIN" << endl;
             stat = visit(context->exprstat()).as<Statement*>();
-			cout << "ExprStatOUT" << endl;
         }
         if(context->declarvar() != nullptr){
             stat = visit(context->declarvar()).as<Statement*>();
@@ -305,11 +310,42 @@ public:
     }
 	
 	antlrcpp::Any visitCompare(MainParser::CompareContext *context) override {
-		return visitChildren(context);
+		Operator* op = nullptr;
+		if(context->children.size() == 1){
+			if(context->children[0]->getText() == ">"){
+				op = new Operator(OPTYPE::GREAT);
+			}else if(context->children[0]->getText() == "<"){
+				op = new Operator(OPTYPE::LESS);
+			}
+		}else if(context->children.size() == 2){
+			if(context->children[0]->getText() == ">" && context->children[0]->getText() == "="){
+				op = new Operator(OPTYPE::GREATEQ);
+			}else if(context->children[0]->getText() == "<" && context->children[0]->getText() == "="){
+				op = new Operator(OPTYPE::LESSEQ);
+			}else if(context->children[0]->getText() == "=" && context->children[0]->getText() == "="){
+				op = new Operator(OPTYPE::EQUAL);
+			}else if(context->children[0]->getText() == "!" && context->children[0]->getText() == "="){
+				op = new Operator(OPTYPE::UNEQUAL);
+			}
+		}
+		return op;
 	}
 
 	antlrcpp::Any visitIfins(MainParser::IfinsContext *context) override {
-        return visitChildren(context);
+		Expr* exp = (Expr*)visit(context->expr());  
+		If* ifins = nullptr;
+		if(context->statement() != nullptr){
+			Statement* stat = (Statement*)visit(context->statement());  
+			ifins = new If(exp, stat);
+		}else if(context->block() != nullptr){
+			Block* block = (Block*)visit(context->block());  
+			ifins = new If(exp, block);
+		}
+		if(context->elseins() != nullptr){
+			Else* elseins = (Else*)visit(context->elseins());
+			ifins->addElse(elseins);
+		}
+		return (Statement*)ifins;
     }
 
     antlrcpp::Any visitElseifins(MainParser::ElseifinsContext *context) override {
@@ -317,7 +353,15 @@ public:
     }
 
     antlrcpp::Any visitElseins(MainParser::ElseinsContext *context) override {
-        return visitChildren(context);
+		Else* elseins = nullptr;
+		if(context->statement() != nullptr){
+			Statement* stat = (Statement*)visit(context->statement());  
+			elseins = new Else(stat);
+		}else if(context->block() != nullptr){
+			Block* block = (Block*)visit(context->block());  
+			elseins = new Else(block);
+		}
+        return elseins;
     }
 
 };
