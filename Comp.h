@@ -18,6 +18,7 @@
 #include "ast-nodes/ParamDec.h"
 #include "ast-nodes/If.h"
 #include "ast-nodes/Else.h"
+#include "ast-nodes/While.h"
 
 using namespace std;
 
@@ -276,6 +277,12 @@ public:
         if(context->declarvar() != nullptr){
             stat = visit(context->declarvar()).as<Statement*>();
         }
+		if(context->ifins() != nullptr){
+            stat = visit(context->ifins()).as<Statement*>();
+        }
+		if(context->whileins() != nullptr){
+            stat = visit(context->whileins()).as<Statement*>();
+        }
         return stat;
     }
 
@@ -368,5 +375,18 @@ public:
 		}
         return elseins;
     }
+
+	antlrcpp::Any visitWhileins(MainParser::WhileinsContext *context) override {
+		Expr* exp = (Expr*)visit(context->expr());
+		While* whileins = nullptr;
+		if(context->statement() != nullptr){
+			Statement* stat = (Statement*)visit(context->statement());  
+			whileins = new While(exp, stat);
+		}else if(context->block() != nullptr){
+			Block* block = (Block*)visit(context->block());  
+			whileins = new While(exp, block);
+		}
+		return whileins;
+	}
 
 };
