@@ -12,8 +12,8 @@ string Return::buildIR(CFG * cfg){
 			cerr << "Erreur dans le retour void" << endl;
 		}
 	}else{
+	    string value= expr->buildIR(cfg);
 		if(expr != nullptr && returnType.getText() == expr->getType().getText()){
-			string value= expr->buildIR(cfg);
 			string left = cfg->create_new_tempvar(expr->getType());
 			int offset= cfg->get_var_index("retValue");
 			vector<string>params1={left,"-"+to_string(-offset)};
@@ -23,6 +23,8 @@ string Return::buildIR(CFG * cfg){
 			vector<string> params3={left,value};
 			cfg->current_bb->add_IRInstr(IRInstr::wmem,expr->getType(),params3);
 		}else{
+		    cerr << returnType.getText() << endl;
+		    cerr << expr->getType().getText() << endl;
 			cerr << "Erreur du type de retour ou sans expression" << endl;
 		}
 	}

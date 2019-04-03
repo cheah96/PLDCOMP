@@ -8,6 +8,8 @@ using namespace std;
 class Parameter{
     public:
         Parameter(string oneName, string oneType) : name(oneName){myType = new Type(oneType); }
+        string getName() { return name; }
+        Type* getType() { return myType; }
         virtual ~Parameter(){delete myType;}
       
     protected:

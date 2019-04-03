@@ -19,7 +19,8 @@ class Function{
 	/*Creates the correspondant IR instruction of this node in CFG*/
         virtual string buildIR(CFG* cfg) = 0;
         virtual string getName() = 0;
-	Type* getReturnType(){return returnType;}
+        ParamDec* getParams(){ return decParams; }
+	    Type* getReturnType(){ return returnType; }
 
     protected:
 	    string name;

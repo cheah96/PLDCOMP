@@ -7,7 +7,7 @@ DefFunc::~DefFunc() {
     }
     params.clear();*/
     if(decParams != nullptr){
-	delete decParams;
+	    delete decParams;
     }
     delete block;
     delete returnType;
@@ -18,6 +18,9 @@ DefFunc::~DefFunc() {
 }*/
 
 string DefFunc::buildIR(CFG* cfg){
+    for(int i = 0; i < decParams->getParameters().size(); i++) {
+        cfg->add_to_symbol_table(decParams->getParameters()[i]->getName(),*(decParams->getParameters()[i]->getType()));        
+    }
     block->buildIR(cfg);
     return "";
 }

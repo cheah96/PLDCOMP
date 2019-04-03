@@ -55,6 +55,44 @@ string ExprBinary::buildIR(CFG * cfg){
             params.push_back(var2);
             cfg->current_bb->add_IRInstr(IRInstr::div,this->getType(),params);
             break;
+		case GREAT:
+			params.push_back(var3);
+            params.push_back(var2);
+            params.push_back(var1);
+            cfg->current_bb->add_IRInstr(IRInstr::cmp_lt,this->getType(),params);
+            break;
+		case LESS:
+			params.push_back(var3);
+            params.push_back(var1);
+            params.push_back(var2);
+            cfg->current_bb->add_IRInstr(IRInstr::cmp_lt,this->getType(),params);
+            break;
+		case GREATEQ:
+			params.push_back(var3);
+            params.push_back(var2);
+            params.push_back(var1);
+            cfg->current_bb->add_IRInstr(IRInstr::cmp_le,this->getType(),params);
+            break;
+		case LESSEQ:
+			params.push_back(var3);
+            params.push_back(var1);
+            params.push_back(var2);
+            cfg->current_bb->add_IRInstr(IRInstr::cmp_le,this->getType(),params);
+            break;
+		case EQUAL:
+			params.push_back(var3);
+            params.push_back(var1);
+            params.push_back(var2);
+			params.push_back("eq");
+            cfg->current_bb->add_IRInstr(IRInstr::cmp_eq,this->getType(),params);
+            break;
+		case UNEQUAL:
+			params.push_back(var3);
+            params.push_back(var1);
+            params.push_back(var2);
+			params.push_back("ueq");
+            cfg->current_bb->add_IRInstr(IRInstr::cmp_eq,this->getType(),params);/*ueq*/
+            break;
 		default:
 	    	break;   
     }

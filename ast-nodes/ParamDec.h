@@ -12,6 +12,7 @@ class ParamDec{
         void addParameter(Parameter* p){
             myDecs.push_back(p);
         }
+        vector<Parameter*> getParameters() { return myDecs; }
 	/*Creates the correspondant IR instruction of this node in CFG*/
         string buildIR(CFG* cfg);
       

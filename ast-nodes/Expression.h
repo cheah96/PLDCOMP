@@ -9,10 +9,12 @@ using namespace std;
 class CFG;
 
 enum OPTYPE{
-  ADD,SUB,MULT,DIV,POSTINC,POSTDEC,PREINC,PREDEC
+  ADD,SUB,MULT,DIV,POSTINC,POSTDEC,PREINC,PREDEC,GREAT,LESS,GREATEQ,LESSEQ,EQUAL,UNEQUAL
 };
 
-const string opNames[8] = {"+","-","*","/","++","--","++","--"};
+const string opNames[14] = {"+","-","*","/","++","--","++","--",">","<",">=","<=","==","!="};
+
+/*Node which represents the operator of binary expression*/
 
 /*Node which represents the operator of binary expression*/
 
