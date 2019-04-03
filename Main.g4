@@ -22,12 +22,13 @@ compare: ('<'|'>') '='?
 	| ('!'|'=') '='
 	;
 
-ifins: 'if' '(' expr ')' (statement|block) elseifins* elseins;
+ifins: 'if' '(' expr ')' (statement|block) elseifins* elseins?;
 
 elseifins : 'else if' '(' expr ')' (statement|block) ;
 
 elseins: 'else' (statement|block) ; 
 
+whileins : 'while' '(' expr ')' (statement|block) ;
 
 declarvar: TYPE VAR (',' VAR)* ';'
 	;
