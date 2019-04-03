@@ -234,7 +234,12 @@ public:
 
     antlrcpp::Any visitNormalExec(MainParser::NormalExecContext *context) override{
         string funcName = context->VAR()->getText();
-        Param* myParams = (Param*)visit(context->param());
+		Param* myParams = nullptr;
+		if(context->param() != nullptr){
+			myParams = (Param*)visit(context->param());
+		}else{
+			cout << "Pas de Param" << endl;
+		}
         ExecFuncNormal* ex = new ExecFuncNormal(funcName, myParams);
         return (Expr*)ex;
     }
