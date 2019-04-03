@@ -32,13 +32,13 @@ void BasicBlock::gen_asm(ostream &o) {
 	}else if (exit_false != nullptr/* && dynamic_cast<CmpInstr*>(instrs.back()) != nullptr*/) {
 	    /*cmpl    $0, -4(%rbp)
         jne     .LBB0_2*/
-		string lastAssigned = instrs.back().getDestination();
+		string lastAssigned = instrs.back()->getDestination();
 		int offset = get_cfg()->get_var_index(lastAssigned);
 		o << "   cmpl   $0, " << offset << "(%rbp)";
 		o << "   je  ";
     	o << exit_false->get_label() <<" \n";
 	}else {
-		o << "   jmp  ";
+		o << "      jmp  ";
     	o << exit_true->get_label() <<" \n";
 	}
 }
