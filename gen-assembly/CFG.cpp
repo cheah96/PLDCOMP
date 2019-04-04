@@ -73,11 +73,11 @@ void CFG::gen_asm_prologue(ostream& o) {
 }
 
 void CFG::gen_asm_epilogue(ostream& o) {
-	string epi = ".EPILOG" + ast->getName() +" : \n";
+	string epi = "";
     Type retType = get_var_type("retValue");
 	if(retType.getText() != "void"){
         int offset = get_var_index("retValue");
-	    epi += "movq  ";
+	    epi += "	movq  ";
 	    epi += to_string(offset) + "(%rbp), %rax\n";
 	}
     epi += "    addq    $";
@@ -121,7 +121,7 @@ int CFG::get_var_index(string name) {
 Type CFG::get_var_type(string name) {
 	auto t = SymbolType.find(name);
 	if (t == SymbolType.end()) {
-		return(Type("Error"));
+		return(Type("unknown"));
 	}
 	return(t->second);
 }

@@ -27,7 +27,6 @@ void BasicBlock::gen_asm(ostream &o) {
 	    instr->gen_asm(o);
 	}
 	if (exit_true == nullptr) {
-	    o << endl;
 		cfg->gen_asm_epilogue(o);
 		return;
 	}else if (exit_false != nullptr/* && dynamic_cast<CmpInstr*>(instrs.back()) != nullptr*/) {
