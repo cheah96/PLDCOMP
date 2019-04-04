@@ -5,17 +5,18 @@ prog: (funct)*;
 funct : deffunc | declarfunc;
 
 	
-expr: expr ('*'|'/') expr # multdiv
+expr: execfunc		# exfunc
+	| VAR ('++'|'--')	# postop
+	| ('++'|'--') VAR	# preop 
+	| expr ('*'|'/') expr # multdiv
 	| expr ('+'|'-') expr # addsub
 	| INT			# const
 	| VAR			# var
 	|  CHAR 		# char
 	| '(' expr ')'  	# par
-	| execfunc		# exfunc
-	| VAR ('++'|'--')	# postop
-	| ('++'|'--') VAR	# preop 
 	| expr ('&&'|'||') expr	# exprBin
 	| expr compare expr 	# cmp
+	| VAR '=' expr          # Assignement
 	;
 
 compare: ('<'|'>') '='?
@@ -30,11 +31,12 @@ elseins: 'else' (statement|block) ;
 
 whileins : 'while' '(' expr ')' (statement|block) ;
 
+forins : 'for' '(' expr? ';' expr? ';' expr? ')' (statement|block) ;
+
 declarvar: TYPE VAR (',' VAR)* ';'
 	;
 
 defvar : TYPE VAR '=' expr ';' #defWithDeclar
-	| VAR '=' expr ';' #defWithoutDeclar
 	;
 
 deffunc : TYPE VAR '(' paramdec? ')' block #defFuncNormal
@@ -59,6 +61,7 @@ statement : ret
 	| declarvar
 	| ifins
 	| whileins
+	| forins
 	;
 
 ret : 'return' expr ';';

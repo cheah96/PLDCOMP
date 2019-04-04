@@ -3,17 +3,9 @@ int square (int a) {
 }
 
 int main(int arg){
-	int i = 3;
-    if (i != square(2)) {
-        i ++;
-    }
-	while(i < 3){
-	    i ++;
-	    putchar('Z');
-	}
-    if (i < 4) {
-        i = 79;
-    }
-    return i;
+	int x;
+	for(x = 1; x != 0; 
+x++) {putchar('j'); putchar('a');}
+    return 1 ;
 }
 

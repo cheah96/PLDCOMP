@@ -19,6 +19,7 @@
 #include "ast-nodes/If.h"
 #include "ast-nodes/Else.h"
 #include "ast-nodes/While.h"
+#include "ast-nodes/For.h"
 
 using namespace std;
 
@@ -145,7 +146,6 @@ public:
     }
 
     antlrcpp::Any visitPreop(MainParser::PreopContext *context) override {
-		cout << "PreopIN" << endl;
         Expr* ex = nullptr;
 		Expr* var = new ExprVar(context->VAR()->getText());
 		if(context->children[0]->getText() == "++"){
@@ -153,8 +153,14 @@ public:
 		}else if(context->children[0]->getText() == "--"){
 			ex = new ExprUnary(OPTYPE::PREDEC, var);
 		}
-		cout << "PreopOUT" << endl;
         return ex;
+    }
+
+	antlrcpp::Any visitAssignement(MainParser::AssignementContext *context) override {
+        string name = context->VAR()->getText();
+        Expr* expr = visit(context->expr()).as<Expr*>();
+        Expr* assign = new ExprAssign(name,expr);
+        return assign;
     }
 
 	antlrcpp::Any visitCmp(MainParser::CmpContext *context) override {
@@ -182,13 +188,6 @@ public:
         string name = context->VAR()->getText();
         Expr* expr = visit(context->expr()).as<Expr*>();
         DefVar* def = new DefVarWithDeclar(type,name,expr);
-        return (Statement*)def;
-    }
-
-    antlrcpp::Any visitDefWithoutDeclar(MainParser::DefWithoutDeclarContext *context) override{
-        string name = context->VAR()->getText();
-        Expr* expr = visit(context->expr()).as<Expr*>();
-        DefVar* def = new DefVarWithoutDeclar(name,expr);
         return (Statement*)def;
     }
 
@@ -280,6 +279,9 @@ public:
         }
 		if(context->whileins() != nullptr){
             stat = visit(context->whileins()).as<Statement*>();
+        }
+		if(context->forins() != nullptr){
+            stat = visit(context->forins()).as<Statement*>();
         }
         return stat;
     }
@@ -387,4 +389,20 @@ public:
 		return (Statement*)whileins;
 	}
 
+	antlrcpp::Any visitForins(MainParser::ForinsContext *context) override {
+		Expr* init = (Expr*)visit(context->expr(0));
+		Statement* oneStat = new ExprStat(init); 
+		Expr* condition = (Expr*)visit(context->expr(1));
+		Expr* op = (Expr*)visit(context->expr(2));
+		Statement* anotherStat = new ExprStat(op); 
+		For* forins = nullptr;
+		if(context->statement() != nullptr){
+			Statement* stat = (Statement*)visit(context->statement());  
+			forins = new For(oneStat, condition, stat, anotherStat);
+		}else if(context->block() != nullptr){
+			Block* block = (Block*)visit(context->block());  
+			forins = new For(oneStat, condition, block, anotherStat);
+		}
+		return (Statement*)forins;
+	}
 };
