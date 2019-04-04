@@ -46,6 +46,9 @@ class Expr {
 		virtual Type getType(){
 			return type;
 		}
+		void setType(Type oneType){
+			type = oneType;
+		}
     protected:
 		Type type;
 };
@@ -64,7 +67,7 @@ class ExprInt : public Expr {
 
 class ExprVar : public Expr {
     public:
-		ExprVar(string oneName) : myName(oneName) {type=Type("int"); }
+		ExprVar(string oneName) : myName(oneName) {type=Type("unknown"); }
 		virtual ~ExprVar(){}
 		int eval (){
 			return 0;
@@ -111,4 +114,17 @@ class ExprUnary : public Expr {
     protected:
 		Expr* op;
 		Operator* myOp;
+};
+
+class ExprAssign : public Expr {
+    public:
+		ExprAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
 };
