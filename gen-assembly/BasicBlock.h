@@ -20,22 +20,21 @@ class CFG;
 
 class BasicBlock {
  public:
-	BasicBlock(CFG* cfg, string entry_label = "") : cfg(cfg), label(entry_label) {}
+	BasicBlock(CFG* cfg, string entry_label = "") : cfg(cfg), label(entry_label), exit_true(nullptr), exit_false(nullptr) {}
 	void gen_asm(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
 	void add_IRInstr(IRInstr::Operation op, Type t, vector<string> params);
 
 	string get_label() { return label;}
+	BasicBlock* get_exit_true() { return exit_true; }
+	BasicBlock* get_exit_false() { return exit_false; }
 
 	CFG* get_cfg() { return cfg;}
 
-	BasicBlock* get_exit_true(){return exit_true;}
 
-	BasicBlock* get_exit_false(){return exit_false;}
+	void set_exit_true(BasicBlock* oneBlock) { exit_true = oneBlock; }
 
-	void set_exit_true(BasicBlock* oneBlock){exit_true = oneBlock;}
-
-	void set_exit_false(BasicBlock* oneBlock){exit_false = oneBlock;}
+	void set_exit_false(BasicBlock* oneBlock) { exit_false = oneBlock; }
 
  protected:
 	// No encapsulation whatsoever here. Feel free to do better.

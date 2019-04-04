@@ -1,17 +1,33 @@
 #include "CFG.h"
 #include "../ast-nodes/Function.h"
 
-CFG::CFG(Function * func, Program* oneProg)
-{
-	BasicBlock* bb = new BasicBlock(this);
+CFG::CFG(Function * func, Program* oneProg) {
+	ast = func;
+	BasicBlock* bb = new BasicBlock(this, "." + ast->getName());
 	bbs.push_back(bb);
 	current_bb = bb;
-	ast = func;
+	BasicBlock* bbExit = new BasicBlock(this, ".EPILOG" + ast->getName());
+	bbs.push_back(bbExit);
+	current_bb->set_exit_true(bbExit);
+	bbExit->set_exit_true(nullptr);
 	prog = oneProg;
 	nextFreeSymbolIndex = 0;
 	nextBBnumber = 1;
 	add_to_symbol_table("retValue", *(ast->getReturnType()));
 }
+
+void CFG::add_bb(BasicBlock* bb) {
+    BasicBlock* bbExit = bbs.back();
+    bbs.pop_back();
+    bbs.push_back(bb);
+    bbs.push_back(bbExit);
+	nextBBnumber += 1;
+}
+
+string CFG::new_BB_name() {
+    return ".LBB_" + ast->getName() + "_" + to_string(nextBBnumber);
+}
+
 void CFG::gen_asm(ostream& o) {
 	o << "	.globl	" << ast->getName() << endl; /*<< "(";
 	for (int i = 0 ; i < ast->getParams()->getParameters().size(); i++)
@@ -27,8 +43,8 @@ void CFG::gen_asm(ostream& o) {
 	for (BasicBlock* bb: bbs) {
 		bb->gen_asm(o);
 	}
-	o << endl;
-	gen_asm_epilogue(o);
+	/*o << endl;
+	gen_asm_epilogue(o);*/
 }
 
 string CFG::IR_reg_to_asm(string reg) {
@@ -46,22 +62,24 @@ void CFG::gen_asm_prologue(ostream& o) {
     pro += "    subq    $";
     pro += to_string(nextFreeSymbolIndex+8);
     pro += ",   %rsp\n";
-	for (int i = 0 ; i < ast->getParams()->getParameters().size(); i++)
-	{
-	    int offset = get_var_index(ast->getParams()->getParameters()[i]->getName());
-	    pro += "    movq    %" + param_register[i] + ", " + to_string(offset) + "(%rbp) \n";
+    if (ast->getParams() != nullptr) {
+	    for (int i = 0 ; i < ast->getParams()->getParameters().size(); i++)
+	    {
+	        int offset = get_var_index(ast->getParams()->getParameters()[i]->getName());
+	        pro += "    movq    %" + param_register[i] + ", " + to_string(offset) + "(%rbp) \n";
+	    }
 	}
 	o << pro << endl;
 }
 
 void CFG::gen_asm_epilogue(ostream& o) {
+	string epi = "";
     Type retType = get_var_type("retValue");
 	if(retType.getText() != "void"){
         int offset = get_var_index("retValue");
-	    o << "	movq  ";
-	    o << offset <<"(%rbp), %rax\n";
+	    epi += "	movq  ";
+	    epi += to_string(offset) + "(%rbp), %rax\n";
 	}
-	string epi = ".EPILOG" + ast->getName() +" : \n";
     epi += "    addq    $";
     epi += to_string(nextFreeSymbolIndex+8);
     epi += ",   %rsp\n";
@@ -103,7 +121,7 @@ int CFG::get_var_index(string name) {
 Type CFG::get_var_type(string name) {
 	auto t = SymbolType.find(name);
 	if (t == SymbolType.end()) {
-		return(Type("Error"));
+		return(Type("unknown"));
 	}
 	return(t->second);
 }

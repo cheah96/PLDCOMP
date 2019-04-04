@@ -2,19 +2,44 @@
 #include "CFG.h"
 
 void BasicBlock::gen_asm(ostream &o) {
+    o << get_label() << " : \n";
 	for (IRInstr* instr : instrs) {
-		instr->gen_asm(o);
+	    /*if (instr == instrs.back() && dynamic_cast<CmpInstr*>(instrs.back()) == nullptr) {
+	        switch(instr.getOp()) {
+	            case IRInstr::cmp_eq : 
+	                o << "   jne  ";
+	                break;
+	            case IRInstr::cmp_neq : 
+	                o << "   je  ";
+	                break;
+	            case IRInstr::cmp_lt : 
+	                o <<  "   jge  ";
+	                break;
+	            case IRInstr::cmp_le : 
+	                o << "   jg  ";
+	                break;
+	        }
+    	    o << exit_false->get_label() <<" \n";
+	    }
+	    else {
+		    instr->gen_asm(o);
+		}*/
+	    instr->gen_asm(o);
 	}
-	/*if (exit_true == nullptr) {
+	if (exit_true == nullptr) {
 		cfg->gen_asm_epilogue(o);
 		return;
-	}else if (exit_false != nullptr && dynamic_cast<CmpInstr*>(instrs.back()) != nullptr) {
-		
-
-	}else {
-		o << "   jmp  ";
-    	o << exit_true->get_label() <<" \n";
-	}*/
+	}else if (exit_false != nullptr/* && dynamic_cast<CmpInstr*>(instrs.back()) != nullptr*/) {
+	    /*cmpl    $0, -4(%rbp)
+        jne     .LBB0_2*/
+		string lastAssigned = instrs.back()->getDestination();
+		int offset = get_cfg()->get_var_index(lastAssigned);
+		o << "        cmpq   $0, " << offset << "(%rbp) \n";
+		o << "        je  ";
+    	o << exit_false->get_label() <<" \n";
+	}
+	o << "        jmp  ";
+	o << exit_true->get_label() <<" \n";
 }
 
 void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> params) {
@@ -45,6 +70,12 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
 			break;
 		case IRInstr::copy :
 			instrs.push_back(new CopyInstr(this, t, params[0],params[1]));
+			break;
+	    case IRInstr::cmp_eq :
+	    case IRInstr::cmp_neq :
+	    case IRInstr::cmp_lt :
+	    case IRInstr::cmp_le :
+			instrs.push_back(new CmpInstr(this, op, t, params[0], params[1], params[2]));
 			break;
 	}
 }

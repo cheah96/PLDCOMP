@@ -9,37 +9,41 @@ using namespace std;
 
 class BasicBlock;
 class IRInstr {
-   public:
-	/** The instructions themselves -- feel free to subclass instead */
-	typedef enum {
-		ldconst,
-		add,
-		sub,
-		mul,
-		div,
-		rmem,
-		wmem,
-		call,
-		copy, 
-		cmp_eq,
-		cmp_lt,
-		cmp_le,
-		ret
-	} Operation;
+    public:
+	    /** The instructions themselves -- feel free to subclass instead */
+	    typedef enum {
+		    ldconst,
+		    add,
+		    sub,
+		    mul,
+		    div,
+		    rmem,
+		    wmem,
+		    call,
+		    copy, 
+		    cmp_eq,
+		    cmp_neq,
+		    cmp_lt,
+		    cmp_le,
+		    ret
+	    } Operation;
 
-	/**  constructor */
-	IRInstr(BasicBlock* bb_, Operation op, Type t) : bb(bb_), op(op), t(t){}
-	virtual ~IRInstr() {}
+	    /**  constructor */
+	    IRInstr(BasicBlock* bb_, Operation op, Type t, string destination = "") : bb(bb_), op(op), t(t), dest(destination){}
+	    virtual ~IRInstr() {}
+	    Operation getOp() { return op; }
+	    string getDestination() { return dest; }
+	    
+	    /** Actual code generation */
+	    virtual void gen_asm(ostream &o) =0; /**< x86 assembly code generation for this IR instruction */
 	
-	/** Actual code generation */
-	virtual void gen_asm(ostream &o) =0; /**< x86 assembly code generation for this IR instruction */
-	
- protected:
-	BasicBlock* bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
-	Operation op;
-	Type t;
-	//vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
-	// if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design. 
+    protected:
+        string dest;
+	    BasicBlock* bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
+	    Operation op;
+	    Type t;
+	    //vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
+	    // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design. 
 };
 
 class RetInstr : public IRInstr {
@@ -53,71 +57,65 @@ class RetInstr : public IRInstr {
 
 class LdconstInstr : public IRInstr {
 	public:
-		LdconstInstr(BasicBlock* bb_, Type t, string destination, string constant) : IRInstr(bb_, ldconst, t), d(destination), c(constant) {}
+		LdconstInstr(BasicBlock* bb_, Type t, string destination, string constant) : IRInstr(bb_, ldconst, t, destination), c(constant) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private: 
-		string d;
 		string c;
 };
 
-class 	CopyInstr : public IRInstr {
+class CopyInstr : public IRInstr {
 	public:
-		CopyInstr(BasicBlock* bb_, Type t, string destination, string source) : IRInstr(bb_, ldconst, t), d(destination), s(source) {}
+		CopyInstr(BasicBlock* bb_, Type t, string destination, string source) : IRInstr(bb_, ldconst, t, destination), s(source) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private: 
-		string d;
 		string s;
 };
 
 class AddInstr : public IRInstr {
 	public:
-		AddInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t), d(destination), x(operand1), y(operand2) {}
+		AddInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
-		string d;
 		string x;
 		string y;
 };
 
 class SubInstr : public IRInstr {
 	public:
-		SubInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t), d(destination), x(operand1), y(operand2) {}
+		SubInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
-		string d;
 		string x;
 		string y;
 };
 
 class MulInstr : public IRInstr {
 	public:
-		MulInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t), d(destination), x(operand1), y(operand2) {}
+		MulInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
-		string d;
 		string x;
 		string y;
 };
 
 class DivInstr : public IRInstr {
 	public:
-		DivInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t), d(destination), x(operand1), y(operand2) {}
+		DivInstr(BasicBlock* bb_, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, add, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
-		string d;
 		string x;
 		string y;
 };
 
 class CmpInstr : public IRInstr {
 	public:
-		CmpInstr(BasicBlock* bb_, Operation op, Type t, string operand1, string operand2) : IRInstr(bb_, op, t), x(operand1), y(operand2) {}
+		CmpInstr(BasicBlock* bb_, Operation op, Type t, string destination, string operand1, string operand2) : IRInstr(bb_, op, t, destination), x(operand1), y(operand2) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
@@ -127,8 +125,7 @@ class CmpInstr : public IRInstr {
 
 class CallInstr : public IRInstr {
 	public:
-		CallInstr(BasicBlock* bb_, Type t, vector<string>& oneParams) : IRInstr(bb_, call, t){
-			dest = oneParams.at(0);
+		CallInstr(BasicBlock* bb_, Type t, vector<string>& oneParams) : IRInstr(bb_, call, t, oneParams.at(0)){
 			label = oneParams.at(1);
 			size_t length = oneParams.size();
 			for(size_t i = 2; i < length; i++){
@@ -139,18 +136,16 @@ class CallInstr : public IRInstr {
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
-		string dest;
 		string label;
 		vector<string> params;
 };
 
 class WmemInstr : public IRInstr {
 	public:
-		WmemInstr(BasicBlock* bb_, Type t, string destination, string valeur) : IRInstr(bb_, wmem, t), dest(destination), val(valeur) {}
+		WmemInstr(BasicBlock* bb_, Type t, string destination, string valeur) : IRInstr(bb_, wmem, t, destination), val(valeur) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
 	private :
-		string dest;
 		string val;
 };
 
