@@ -19,6 +19,7 @@
 #include "ast-nodes/If.h"
 #include "ast-nodes/Else.h"
 #include "ast-nodes/While.h"
+#include "ast-nodes/For.h"
 
 using namespace std;
 
@@ -80,6 +81,18 @@ public:
             temp = new ExprBinary(OPTYPE::DIV,op1,op2);
         }
         return temp;
+    }
+
+    antlrcpp::Any visitOuBin(MainParser::OuBinContext *context) override{
+	return visitChildren(context);
+    }
+  
+    antlrcpp::Any visitOuExBin(MainParser::OuExBinContext *context) override{
+	return visitChildren(context);
+    }
+    
+    antlrcpp::Any visitEtBin(MainParser::EtBinContext *context) override{
+	return visitChildren(context);
     }
 
     antlrcpp::Any visitChar(MainParser::CharContext *context) override{
@@ -145,7 +158,6 @@ public:
     }
 
     antlrcpp::Any visitPreop(MainParser::PreopContext *context) override {
-		cout << "PreopIN" << endl;
         Expr* ex = nullptr;
 		Expr* var = new ExprVar(context->VAR()->getText());
 		if(context->children[0]->getText() == "++"){
@@ -153,8 +165,25 @@ public:
 		}else if(context->children[0]->getText() == "--"){
 			ex = new ExprUnary(OPTYPE::PREDEC, var);
 		}
-		cout << "PreopOUT" << endl;
         return ex;
+    }
+
+	antlrcpp::Any visitAssignement(MainParser::AssignementContext *context) override {
+        string name = context->VAR()->getText();
+        Expr* expr = visit(context->expr()).as<Expr*>();
+        Expr* assign = nullptr;
+	if(context->children[1]->getText() == "="){
+		assign = new ExprAssign(name,expr);
+	}else if(context->children[1]->getText() == "*="){
+		assign = new ExprMultAssign(name,expr);
+	}else if(context->children[1]->getText() == "/="){
+		assign = new ExprDivAssign(name,expr);
+	}else if(context->children[1]->getText() == "+="){
+		assign = new ExprAddAssign(name,expr);
+	}else if(context->children[1]->getText() == "-="){
+		assign = new ExprSubAssign(name,expr);
+	}
+        return assign;
     }
 
 	antlrcpp::Any visitCmp(MainParser::CmpContext *context) override {
@@ -182,13 +211,6 @@ public:
         string name = context->VAR()->getText();
         Expr* expr = visit(context->expr()).as<Expr*>();
         DefVar* def = new DefVarWithDeclar(type,name,expr);
-        return (Statement*)def;
-    }
-
-    antlrcpp::Any visitDefWithoutDeclar(MainParser::DefWithoutDeclarContext *context) override{
-        string name = context->VAR()->getText();
-        Expr* expr = visit(context->expr()).as<Expr*>();
-        DefVar* def = new DefVarWithoutDeclar(name,expr);
         return (Statement*)def;
     }
 
@@ -238,8 +260,6 @@ public:
 		Param* myParams = nullptr;
 		if(context->param() != nullptr){
 			myParams = (Param*)visit(context->param());
-		}else{
-			cout << "Pas de Param" << endl;
 		}
         ExecFuncNormal* ex = new ExecFuncNormal(funcName, myParams);
         return (Expr*)ex;
@@ -282,6 +302,9 @@ public:
         }
 		if(context->whileins() != nullptr){
             stat = visit(context->whileins()).as<Statement*>();
+        }
+		if(context->forins() != nullptr){
+            stat = visit(context->forins()).as<Statement*>();
         }
         return stat;
     }
@@ -330,13 +353,13 @@ public:
 				op = new Operator(OPTYPE::LESS);
 			}
 		}else if(context->children.size() == 2){
-			if(context->children[0]->getText() == ">" && context->children[0]->getText() == "="){
+			if(context->children[0]->getText() == ">" && context->children[1]->getText() == "="){
 				op = new Operator(OPTYPE::GREATEQ);
-			}else if(context->children[0]->getText() == "<" && context->children[0]->getText() == "="){
+			}else if(context->children[0]->getText() == "<" && context->children[1]->getText() == "="){
 				op = new Operator(OPTYPE::LESSEQ);
-			}else if(context->children[0]->getText() == "=" && context->children[0]->getText() == "="){
+			}else if(context->children[0]->getText() == "=" && context->children[1]->getText() == "="){
 				op = new Operator(OPTYPE::EQUAL);
-			}else if(context->children[0]->getText() == "!" && context->children[0]->getText() == "="){
+			}else if(context->children[0]->getText() == "!" && context->children[1]->getText() == "="){
 				op = new Operator(OPTYPE::UNEQUAL);
 			}
 		}
@@ -386,7 +409,23 @@ public:
 			Block* block = (Block*)visit(context->block());  
 			whileins = new While(exp, block);
 		}
-		return whileins;
+		return (Statement*)whileins;
 	}
 
+	antlrcpp::Any visitForins(MainParser::ForinsContext *context) override {
+		Expr* init = (Expr*)visit(context->expr(0));
+		Statement* oneStat = new ExprStat(init); 
+		Expr* condition = (Expr*)visit(context->expr(1));
+		Expr* op = (Expr*)visit(context->expr(2));
+		Statement* anotherStat = new ExprStat(op); 
+		For* forins = nullptr;
+		if(context->statement() != nullptr){
+			Statement* stat = (Statement*)visit(context->statement());  
+			forins = new For(oneStat, condition, stat, anotherStat);
+		}else if(context->block() != nullptr){
+			Block* block = (Block*)visit(context->block());  
+			forins = new For(oneStat, condition, block, anotherStat);
+		}
+		return (Statement*)forins;
+	}
 };

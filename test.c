@@ -1,14 +1,14 @@
-void p(char x) {
-    putchar(x);
-} 
-
-int square(int x) {
-    return x*x;
+int square (int a) {
+    return a*a;
 }
 
 int main(int arg){
-    int x = 3;
-    int y = 4;
-	int z = x;
-	return 40/x;
+	int x;
+	x = 2;
+	x *= 4;
+	x += x * (5+x);
+	x /= 3;
+	x += x /= 3;
+    return x;
 }
+

@@ -45,11 +45,11 @@ int main(int argc, const char ** argv)
 
 
     Program* prog = (Program*)visitor.visit(tree);
+    cout << "azdadqdszda"<< endl;
     prog->buildIR();
-	cout << "sqd"<< endl;
     ofstream o;
     o.open("test.s");
-
+    cout << "azdazda"<< endl;
     prog->generateCode(o);
 	cout << "PLD COMP Success" << endl;
     
