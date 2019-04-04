@@ -18,6 +18,8 @@ const string opNames[14] = {"+","-","*","/","++","--","++","--",">","<",">=","<=
 
 /*Node which represents the operator of binary expression*/
 
+/*Node which represents the operator of binary expression*/
+
 class Operator{
 	public:
 		Operator(OPTYPE oneValue) : value(oneValue) { }
@@ -44,6 +46,9 @@ class Expr {
 		virtual Type getType(){
 			return type;
 		}
+		void setType(Type oneType){
+			type = oneType;
+		}
     protected:
 		Type type;
 };
@@ -62,7 +67,7 @@ class ExprInt : public Expr {
 
 class ExprVar : public Expr {
     public:
-		ExprVar(string oneName) : myName(oneName) {type=Type("int"); }
+		ExprVar(string oneName) : myName(oneName) {type=Type("unknown"); }
 		virtual ~ExprVar(){}
 		int eval (){
 			return 0;
@@ -109,4 +114,69 @@ class ExprUnary : public Expr {
     protected:
 		Expr* op;
 		Operator* myOp;
+};
+
+class ExprAssign : public Expr {
+    public:
+		ExprAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprMultAssign : public Expr {
+    public:
+		ExprMultAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprMultAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprDivAssign : public Expr {
+    public:
+		ExprDivAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprDivAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprAddAssign : public Expr {
+    public:
+		ExprAddAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprAddAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
+};
+
+class ExprSubAssign : public Expr {
+    public:
+		ExprSubAssign(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); type = Type("unknown");}
+		int eval (){
+			return 0;
+		}
+		virtual ~ExprSubAssign(){delete myExpr; delete myVar;}
+		string buildIR(CFG * cfg);
+	protected:
+		ExprVar* myVar;
+		Expr* myExpr; 
 };

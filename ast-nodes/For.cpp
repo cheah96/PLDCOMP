@@ -1,12 +1,14 @@
-#include "While.h"
+#include "For.h"
 
-While::While(Expr* oneExpr, Statement* oneStatement) : myCondition(oneExpr)
+For::For(Statement* oneInit, Expr* oneExpr, Statement* oneStatement, Statement* afterFor) : myCondition(oneExpr)
 {
+	init = oneInit;
 	myBlock = new Block;
 	myBlock->addStatement(oneStatement);
+	myBlock->addStatement(afterFor);
 }
 
-While::~While()
+For::~For()
 {
 	if(myBlock != nullptr){
 		delete myBlock;
@@ -14,8 +16,9 @@ While::~While()
 	delete myCondition;
 }
 
-string While::buildIR(CFG* cfg){
-    cout << "while build ir" << endl; 
+string For::buildIR(CFG* cfg){
+    cout << "for build ir" << endl; 
+	init->buildIR(cfg);
 	BasicBlock* beforeWhileBB = cfg->current_bb;
 	BasicBlock* testBB = new BasicBlock(cfg, cfg->new_BB_name());
 	cfg->add_bb(testBB);

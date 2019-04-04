@@ -30,13 +30,3 @@ class DefVarWithDeclar : public DefVar{
 		Type* myType;
 		Expr* myExpr; 
 };
-
-class DefVarWithoutDeclar : public DefVar{
-	public:
-		DefVarWithoutDeclar(string oneName, Expr* oneExpr ) : myExpr(oneExpr){ myVar = new ExprVar(oneName); }
-		virtual ~DefVarWithoutDeclar(){delete myExpr; delete myVar;}
-		string buildIR(CFG * cfg);
-	protected:
-		ExprVar* myVar;
-		Expr* myExpr; 
-};
