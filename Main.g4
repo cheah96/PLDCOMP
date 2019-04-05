@@ -14,9 +14,12 @@ expr: execfunc		# exfunc
 	| VAR			# var
 	|  CHAR 		# char
 	| '(' expr ')'  	# par
+	| expr '&' expr         # etBin
+	| expr '^' expr         # ouExBin
+	| expr '|' expr         # ouBin
 	| expr ('&&'|'||') expr	# exprBin
 	| expr compare expr 	# cmp
-	| VAR '=' expr          # Assignement
+	| VAR ('*='|'/='|'+='|'-='|'=') expr          # Assignement
 	;
 
 compare: ('<'|'>') '='?

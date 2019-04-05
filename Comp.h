@@ -83,6 +83,18 @@ public:
         return temp;
     }
 
+    antlrcpp::Any visitOuBin(MainParser::OuBinContext *context) override{
+	return visitChildren(context);
+    }
+  
+    antlrcpp::Any visitOuExBin(MainParser::OuExBinContext *context) override{
+	return visitChildren(context);
+    }
+    
+    antlrcpp::Any visitEtBin(MainParser::EtBinContext *context) override{
+	return visitChildren(context);
+    }
+
     antlrcpp::Any visitChar(MainParser::CharContext *context) override{
         string oneChar = context->CHAR()->getText();
         char myChar;
@@ -159,7 +171,18 @@ public:
 	antlrcpp::Any visitAssignement(MainParser::AssignementContext *context) override {
         string name = context->VAR()->getText();
         Expr* expr = visit(context->expr()).as<Expr*>();
-        Expr* assign = new ExprAssign(name,expr);
+        Expr* assign = nullptr;
+	if(context->children[1]->getText() == "="){
+		assign = new ExprAssign(name,expr);
+	}else if(context->children[1]->getText() == "*="){
+		assign = new ExprMultAssign(name,expr);
+	}else if(context->children[1]->getText() == "/="){
+		assign = new ExprDivAssign(name,expr);
+	}else if(context->children[1]->getText() == "+="){
+		assign = new ExprAddAssign(name,expr);
+	}else if(context->children[1]->getText() == "-="){
+		assign = new ExprSubAssign(name,expr);
+	}
         return assign;
     }
 

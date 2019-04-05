@@ -1,4 +1,4 @@
-ANTLR=/shares/public/tp/ANTLR4-CPP/bin/antlr4
+ANTLR=/shares/public/tp/antlr/bin/antlr4
 ANTLRRUNTIME=/shares/public/tp/ANTLR4-CPP
 
 default:

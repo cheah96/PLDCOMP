@@ -4,8 +4,16 @@ int square (int a) {
 
 int main(int arg){
 	int x;
-	for(x = 1; x != 0; 
-x++) {putchar('j'); putchar('a');}
-    return 1 ;
+	x = 2;
+	if ( x < 1 ) {
+		return x;
+	}else{
+		return 5;
+	}
+	int i = 3;
+	for(i = 0; i < 3; i++){
+		putchar('a');
+	}
+    return x;
 }
 
