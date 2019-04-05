@@ -1,9 +1,10 @@
 #include "IRInstr.h"
 #include "BasicBlock.h"
+#include "../ast-nodes/Function.h"
 #include "CFG.h"
 
 void RetInstr::gen_asm(ostream &o) {
-	Type retType = bb->get_cfg()->get_var_type("retValue");
+	/*Type retType = bb->get_cfg()->get_var_type("retValue");
 	if(retType.getText()!= "void"){
 	    int offsetReturn = bb->get_cfg()->get_var_index("retValue");
 	    int offsetValue = bb->get_cfg()->get_var_index(value);
@@ -16,7 +17,7 @@ void RetInstr::gen_asm(ostream &o) {
         	o << offsetValue <<"(%rbp)";
 		    o << "," << offsetReturn <<"(%rbp)";
 	    }
-	}
+	}*/
 }
 
 void LdconstInstr::gen_asm(ostream &o) {
@@ -248,7 +249,7 @@ void CallInstr::gen_asm(ostream &o) {
 	    o << offset << "(%rbp), ";
 	    o << "%" << ParamRegister[i] << "\n";
 	}
-	o << "        call " << label << "\n";
+	o << "        call " << label << "@PLT" << "\n";
 	if(dest != ""){
 	    offset = bb->get_cfg()->get_var_index(dest);
 	    o << "        movq    ";

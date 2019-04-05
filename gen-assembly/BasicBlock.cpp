@@ -60,7 +60,7 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
 			instrs.push_back(new DivInstr(this, t, params[0], params[1], params[2]));
 			break;
 		case IRInstr::ret :
-			instrs.push_back(new RetInstr(this, t, params[0]));
+			instrs.push_back(new RetInstr(this, t));//params[0]
 			break;
 		case IRInstr::call :
 			instrs.push_back(new CallInstr(this, t, params));

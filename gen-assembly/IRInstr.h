@@ -48,11 +48,9 @@ class IRInstr {
 
 class RetInstr : public IRInstr {
 	public:
-		RetInstr(BasicBlock* bb_, Type t, string params) : IRInstr(bb_, ret, t), value(params) {}
+		RetInstr(BasicBlock* bb_, Type t) : IRInstr(bb_, ret, t) {}
 		/** Actual code generation */
 		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
-	private: 
-		string value;
 };
 
 class LdconstInstr : public IRInstr {

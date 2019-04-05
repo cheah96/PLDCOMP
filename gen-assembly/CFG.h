@@ -22,6 +22,7 @@ class CFG {
 		Function* ast; /**< The AST this CFG comes from */
 		
 		void add_bb(BasicBlock* bb); 
+		BasicBlock* get_bb_epilog() { return bbs.back(); }
 
 		// x86 code generation: could be encapsulated in a processor class in a retargetable compiler
 		void gen_asm(ostream& o);
